@@ -1,0 +1,134 @@
+::ng-deep .mat-bottom-sheet-container {
+    padding: 0;
+    height: 300px;
+}
+
+.smiles-wrapper {
+
+    .head {
+        box-sizing: border-box;
+        z-index: 7;
+        padding: 0 20px 0 20px;
+        height: 55px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+
+        h2 {
+            margin: 0;
+            font-family: 'Muli', sans-serif;
+            font-weight: 300;
+
+        }
+
+        .close-btn {
+            background: transparent !important;
+
+            i {
+                font-size: 30px;
+            }
+        }
+
+        .mat-divider {
+            width: 85%;
+        }
+    }
+
+    .smiles-list {
+        z-index: 5;
+        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: space-between;
+
+        .smile-item {
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.51);
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+
+            .smile-img {
+                transition: 0.5s;
+                transform: scale(1.5);
+            }
+
+            &:hover {
+                transform: scale(1.13);
+                transition: 0.3s;
+
+                .smile-img {
+                    transition: 0.5s;
+                    transform: scale(2);
+                }
+            }
+
+
+        }
+    }
+}
+
+.light {
+    transition: .3s;
+    background: #e6e7f2;
+
+    .head {
+        transition: .3s;
+        background: #e6e7f2;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    }
+
+    h2 {
+        transition: .3s;
+        color: black;
+    }
+
+    .mat-divider {
+        transition: .3s;
+        border-color: black;
+    }
+
+    .close-btn {
+        i {
+            transition: .3s;
+            color: black;
+        }
+    }
+}
+
+.dark {
+    transition: .3s;
+    background: #273038;
+
+    .head {
+        transition: .3s;
+        background: #1b2129;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    h2 {
+        transition: .3s;
+        color: white;
+    }
+
+    .mat-divider {
+        transition: .3s;
+        border-color: white;
+    }
+
+    .close-btn {
+        i {
+            transition: .3s;
+            color: white;
+        }
+    }
+}

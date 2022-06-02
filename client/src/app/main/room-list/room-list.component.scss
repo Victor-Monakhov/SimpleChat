@@ -1,0 +1,366 @@
+.room-list-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .add-btn {
+        padding: 5px 10px;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        user-select: none;
+        border: 0 !important;
+        cursor: pointer;
+        width: 100%;
+        height: auto;
+        margin-bottom: 20px;
+
+        span {
+            font-weight: 300;
+            font-size: 24px;
+        }
+
+        mat-icon {
+            font-size: 30px;
+            height: auto;
+            width: auto;
+        }
+    }
+
+    .list-title {
+        padding: 0 20px;
+        box-sizing: border-box;
+        user-select: none;
+        display: flex;
+        justify-content: space-between;
+        font-family: 'Montserrat Alternates', sans-serif;
+        align-items: center;
+        width: 100%;
+        height: 48px;
+
+        p {
+            font-weight: 400;
+            font-size: 30px;
+        }
+    }
+
+    .theme-chooser {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 20px;
+
+        mat-icon {
+            width: 30px;
+            height: 30px;
+        }
+    }
+
+    ::ng-deep .mat-list-base .mat-list-item .mat-list-item-content {
+        padding: 0;
+    }
+
+    .room-list-item {
+        .unread {
+            width: 20px;
+            height: 20px;
+            margin: 0 0 0 10px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Quicksand', sans-serif;
+        }
+    }
+
+    .room-title-wrapper {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+        justify-content: center;
+
+        span {
+            margin: 0;
+            width: 90%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    }
+
+    .search-rooms {
+        //box-shadow: 0 0 15px rgba(0, 0, 0, 0.24);
+        padding: 20px;
+
+        input {
+            box-sizing: border-box;
+            transition: 0.3s;
+            height: 30px;
+            width: 100%;
+            border: 0;
+            margin-bottom: 15px;
+            box-shadow: 0 0 0;
+            border-radius: 50px;
+            outline: none;
+            padding: 5px 20px;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.45);
+
+            &:hover, &:focus {
+                transition: 0.3s;
+                background: rgba(255, 255, 255, 0.8);
+                box-shadow: 0 0 10px white;
+            }
+        }
+    }
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: #f3a311;
+    }
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+        background-color: #be7911;
+    }
+
+    .searchToggle {
+        box-sizing: border-box;
+        cursor: pointer;
+        transition: 0.3s;
+        height: 30px;
+        width: auto;
+        font-size: 20px;
+        font-weight: 300;
+        background: transparent;
+    }
+
+    .room-list {
+        border-top: 1px solid rgba(0, 0, 0, 0.22);
+        position: relative;
+        height: calc(100vh - 349px);
+    }
+
+    .room-title {
+        transition: 0.3s;
+        cursor: pointer;
+        color: white;
+        font-family: 'Montserrat Alternates', sans-serif;
+        font-weight: 400;
+        font-size: 25px;
+
+        &:hover {
+            transition: 0.3s;
+            filter: drop-shadow(0 3px 10px white);
+        }
+    }
+
+    ::ng-deep .mat-divider {
+        transition: 0.3s;
+        width: 90%;
+    }
+}
+
+.light {
+
+    .list-title {
+        transition: 0.3s;
+        background: rgba(0, 0, 0, 0.39);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        color: black;
+    }
+
+    .add-btn {
+        transition: 0.3s;
+        background: rgba(0, 0, 0, 0.18);
+
+        mat-icon {
+            transition: 0.3s;
+            color: black;
+        }
+    }
+
+    .theme-icon {
+        transition: 0.3s;
+        user-select: none;
+        font-size: 30px;
+        color: black;
+    }
+
+    .room-list-item {
+        .unread {
+            color: black;
+            border-bottom: 2px solid #3071c2;
+        }
+    }
+
+    .room-title-wrapper {
+        small {
+            transition: 0.3s;
+            color: black;
+        }
+    }
+
+    .search-rooms {
+
+        input {
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.51);
+            background: rgba(255, 255, 255, 0.45);
+
+            &:hover, &:focus {
+                transition: 0.3s;
+                background: rgba(255, 255, 255, 0.8);
+                box-shadow: 0 0 10px #000000;
+            }
+        }
+    }
+
+    .searchToggle {
+        transition: 0.3s;
+        color: black;
+    }
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        transition: 0.3s;
+        background-color: #3071c2;
+    }
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+        transition: 0.3s;
+        background-color: #233f7d;
+    }
+
+    .room-list-item {
+        transition: 0.3s;
+        cursor: pointer;
+
+        .room-title {
+            color: black;
+        }
+
+        ::ng-deep .mat-divider {
+            background-color: rgba(0, 0, 0, 0.72);
+        }
+
+        &:hover {
+            transition: 0.3s;
+            background: rgba(0, 0, 0, 0.11);
+
+            .room-title {
+                transition: 0.3s;
+                color: white;
+                filter: drop-shadow(0 3px 10px #000000);
+            }
+
+
+            ::ng-deep .mat-divider {
+                transition: 0.1s;
+                width: 100%;
+            }
+        }
+    }
+
+
+}
+
+.dark {
+
+    .list-title {
+        transition: 0.3s;
+        background: rgba(0, 0, 0, 0.51);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        color: white;
+    }
+
+    .theme-icon {
+        transition: 0.3s;
+        user-select: none;
+        font-size: 30px;
+        color: white;
+    }
+
+    .add-btn {
+        transition: 0.3s;
+        background: rgba(0, 0, 0, 0.38);
+        color: white;
+
+        mat-icon {
+            transition: 0.3s;
+            color: white;
+        }
+    }
+
+    .room-list-item {
+        .unread {
+            color: white;
+            border-bottom: 2px solid #f44336;
+        }
+    }
+
+    .room-title-wrapper {
+        small {
+            transition: 0.3s;
+            color: white;
+        }
+    }
+
+    .search-rooms {
+
+        input {
+            transition: 0.3s;
+            box-shadow: 0 0 0;
+            background: rgba(255, 255, 255, 0.45);
+
+            &:hover, &:focus {
+                transition: 0.3s;
+                background: rgba(255, 255, 255, 0.8);
+                box-shadow: 0 0 10px white;
+            }
+        }
+    }
+
+    .searchToggle {
+        transition: 0.3s;
+        color: white;
+    }
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: #f3a311;
+    }
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+        background-color: #a97010;
+    }
+
+
+    .room-list-item {
+        transition: 0.3s;
+        cursor: pointer;
+
+        ::ng-deep .mat-divider {
+            background-color: rgba(255, 255, 255, 0.72);
+        }
+
+        &:hover {
+            transition: 0.3s;
+            background: rgba(0, 0, 0, 0.11);
+
+            .room-title {
+                transition: 0.3s;
+                color: white;
+                filter: drop-shadow(0 3px 10px #ffffff);
+            }
+
+            ::ng-deep .mat-divider {
+                transition: 0.1s;
+                width: 100%;
+            }
+        }
+    }
+
+    ::ng-deep .mat-divider {
+        background-color: rgba(255, 255, 255, 0.47);
+    }
+}

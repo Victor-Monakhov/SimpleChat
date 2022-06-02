@@ -1,0 +1,17 @@
+<div class="smiles-wrapper" [ngClass]="{'dark': theme === 'dark', 'light': theme === 'light'}">
+    <div class="head">
+        <h2>Smiles collection</h2>
+        <button mat-button (click)="onClose($event)" class="close-btn">
+            <i class="material-icons">
+                clear
+            </i>
+        </button>
+    </div>
+    <perfect-scrollbar [config]="config">
+        <div class="smiles-list">
+            <div class="smile-item" *ngFor="let smile of smiles" (click)="sendToInput($event)">
+                <span class="smile-img">{{smile}}</span>
+            </div>
+        </div>
+    </perfect-scrollbar>
+</div>

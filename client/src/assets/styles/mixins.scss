@@ -1,0 +1,30 @@
+@import 'variables';
+
+@mixin media-property($property,
+                      $value-xs,
+                      $value-sm: null,
+                      $value-md: null,
+                      $value-lg: null,
+                      $value-xl: null) {
+    @if ($value-sm == null) {
+        @media screen and (min-width: $xs + 1px) { #{$property}: $value-xs; }
+    } @else if ($value-md == null) {
+        @media screen and (min-width: $xs + 1px) { #{$property}: $value-xs; }
+        @media screen and (min-width: $sm + 1px) { #{$property}: $value-sm; }
+    } @else if ($value-lg == null) {
+        @media screen and (min-width: $xs + 1px) { #{$property}: $value-xs; }
+        @media screen and (min-width: $sm + 1px) { #{$property}: $value-sm; }
+        @media screen and (min-width: $md + 1px) { #{$property}: $value-md; }
+    } @else if ($value-xl == null) {
+        @media screen and (min-width: $xs + 1px) { #{$property}: $value-xs; }
+        @media screen and (min-width: $sm + 1px) { #{$property}: $value-sm; }
+        @media screen and (min-width: $md + 1px) { #{$property}: $value-md; }
+        @media screen and (min-width: $lg + 1px) { #{$property}: $value-lg; }
+    } @else {
+        @media screen and (min-width: $xs + 1px) { #{$property}: $value-xs; }
+        @media screen and (min-width: $sm + 1px) { #{$property}: $value-sm; }
+        @media screen and (min-width: $md + 1px) { #{$property}: $value-md; }
+        @media screen and (min-width: $lg + 1px) { #{$property}: $value-lg; }
+        @media screen and (min-width: $xl + 1px) { #{$property}: $value-xl; }
+    }
+}

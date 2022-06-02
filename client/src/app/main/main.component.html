@@ -1,0 +1,27 @@
+<div class="wrapper" [ngClass]="{'dark': theme === 'dark', 'light': theme === 'light'}">
+    <app-chat (showParticipants)="showSideNav()"></app-chat>
+    <div class="flip-card">
+        <div class="flip-card-inner" #cardInner>
+            <div class="flip-card-front">
+                <app-contact-list [isDisplayed]="isFlipped"
+                                  (closeParticipants)="showSideNav()"></app-contact-list>
+            </div>
+            <div class="flip-card-back">
+                <app-smiles (closeParticipants)="showSideNav()"></app-smiles>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-drop-panel #contactList
+                class="drop-contact-list"
+                [dropPanel]="contactList"
+                [trigger]="contactListTrigger$ | async"
+                (triggerEvent)="contactListTriggerHandler($event)">
+    <app-contact-list [isDisplayed]="isFlipped"
+                      (closeParticipants)="showSideNav()"></app-contact-list>
+</app-drop-panel>
+
+
+
+

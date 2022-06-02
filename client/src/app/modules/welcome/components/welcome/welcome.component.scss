@@ -1,0 +1,75 @@
+@import 'mixins.scss';
+@import 'colors.scss';
+
+.wrapper {
+    z-index: 0;
+    height: 100vh;
+    background: linear-gradient(180deg, #e6e7f2, #4a4a4a);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+
+    .description {
+        @include media-property(width, auto, auto, 400px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 300;
+        color: $white;
+
+        p {
+            color: $white;
+            text-align: center;
+        }
+    }
+
+    h1 {
+        @include media-property(font-size, 42px, 42px, 62px);
+        margin: 0;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 300;
+        color: $white;
+        text-align: center;
+    }
+
+    .login-wrapper {
+        @include media-property(flex-direction, column, column, row);
+        @include media-property(width, auto, auto, 450px);
+        display: flex;
+        height: 120px;
+        margin-top: 30px;
+        justify-content: space-between;
+        align-content: space-between;
+
+        a {
+            text-decoration: none;
+        }
+
+        .google-login, .github-login {
+            height: 3rem;
+            width: 12rem;
+            text-decoration: none;
+            border: none;
+            border-radius: 50px;
+            background: transparent;
+            box-shadow: 0 5px 5px 0 $blackA04;
+            color: $white;
+            font-weight: 300;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 20px;
+            transition: 0.3s;
+            cursor: pointer;
+
+            &:hover {
+                color: $black;
+                transform: translateY(5px);
+                background: $whiteA03;
+                box-shadow: 0 0 0;
+            }
+        }
+    }
+}

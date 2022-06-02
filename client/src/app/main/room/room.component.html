@@ -1,0 +1,150 @@
+<div class="room-wrapper" [ngClass]="{'dark': theme === 'dark', 'light': theme === 'light'}">
+    <div class="chat-menu">
+        <ng-container *ngIf="(currentRoom._id !== 'common'); else ifCommon">
+            <ng-container *ngIf="!currentRoom.isFavorites; else ifCommon">
+                <div class="room-info">
+                    <button mat-button (click)="openList.emit()">
+                        <mat-icon [matBadge]="overallUnreadMessages.toString()"
+                                  matBadgePosition="above before"
+                                  [matBadgeHidden]="overallUnreadMessages === 0">
+                            vertical_split
+                        </mat-icon>
+                    </button>
+                    <div class="room-title">
+                        <mat-icon *ngIf="chatService.device['isDesktop']">meeting_room</mat-icon>
+                        <div class="room-title-text">
+                            {{currentRoom.title}}
+                            <small>{{currentRoom.users.length}} participants</small>
+                        </div>
+                        <button class="contact-list-btn" (click)="onContactList()">
+                            <mat-icon>people_alt</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <ng-container *ngIf="chatService.device['isDesktop']; else mobileMenu">
+                    <mat-list class="menu-items">
+                        <mat-list-item matRipple (click)="inviteUsers()">
+                            <mat-icon>person_add</mat-icon>
+                        </mat-list-item>
+                        <mat-divider vertical></mat-divider>
+                        <mat-list-item matRipple (click)="leaveRoom()">
+                            <mat-icon>exit_to_app</mat-icon>
+                        </mat-list-item>
+                        <mat-divider vertical *ngIf="currentRoom.creator._id === me"></mat-divider>
+                        <mat-list-item matRipple
+                                       (click)="roomSettings()"
+                                       *ngIf="currentRoom.creator._id === me">
+                            <mat-icon>settings</mat-icon>
+                        </mat-list-item>
+                    </mat-list>
+                </ng-container>
+
+                <ng-template #mobileMenu>
+                    <button mat-button class="menu-btn"
+                            (click)="isActiveMenu = true"
+                            [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button class="custom-menu-btn" mat-menu-item matRipple (click)="inviteUsers()">
+                            <mat-icon>person_add</mat-icon>
+                            <span>Add</span>
+                        </button>
+                        <button class="custom-menu-btn" mat-menu-item matRipple (click)="leaveRoom()">
+                            <mat-icon>exit_to_app</mat-icon>
+                            <span>Exit</span>
+                        </button>
+                        <button class="custom-menu-btn" mat-menu-item matRipple
+                                (click)="roomSettings()"
+                                *ngIf="currentRoom.creator._id === me">
+                            <mat-icon>settings</mat-icon>
+                            <span>Settings</span>
+                        </button>
+                    </mat-menu>
+                </ng-template>
+            </ng-container>
+        </ng-container>
+
+        <ng-template #ifCommon>
+            <div class="room-info">
+                <button mat-button (click)="openList.emit()">
+                    <mat-icon [matBadge]="overallUnreadMessages.toString()"
+                              matBadgePosition="above before"
+                              [matBadgeHidden]="overallUnreadMessages === 0">
+                        vertical_split
+                    </mat-icon>
+                </button>
+                <span class="room-title">
+                <mat-icon>meeting_room</mat-icon>
+                    {{currentRoom.title}}
+            </span>
+            </div>
+        </ng-template>
+    </div>
+
+    <perfect-scrollbar [config]="config" (psScrollY)="onScroll($event)">
+        <div id="contextmenu-control">
+            <div id="messagecontextmenutarget">
+                <mat-list class="mt-lst">
+                    <mat-list-item *ngFor="let message of messages" [ngClass]="{
+                'own': message.creator._id === me && !message.isSystemMessage,
+                'foreign' : message.creator._id !== me && !message.isSystemMessage,
+                'system' : message.isSystemMessage}">
+                        <div class="message-item" >
+                            <app-message-item [message]="message"
+                                              [users]="users"
+                                              (loadRequest)="messageRequest($event)"
+                                              (viewChange)="onViewportChange($event)"
+                                              (contextmenu)="onMessageRightClick(message)"
+                                              [context-menu]="menuItems" [isMyMessage]="message.creator._id === me">
+                            </app-message-item>
+                        </div>
+                    </mat-list-item>
+                    <app-custom-context-menu></app-custom-context-menu>
+<!--                    <ejs-contextmenu-->
+<!--                        #messagecontextmenu-->
+<!--                        target='#messagecontextmenutarget'-->
+<!--                        [items]='menuItems'-->
+<!--                        (select)="onSelectOption($event)"-->
+<!--                        (beforeItemRender)="addDisabled($event)">-->
+<!--                    </ejs-contextmenu>-->
+                </mat-list>
+            </div>
+        </div>
+    </perfect-scrollbar>
+
+    <div class="input-area">
+        <div class="input-message" dir="auto">
+            <perfect-scrollbar [config]="config" [autoPropagation]="true">
+                <div class="composer_rich_textarea"
+                     contenteditable="true"
+                     #inputText
+                     [id]="currentRoom.title"
+                     (keydown.enter)="sendMessage($event)">
+                </div>
+            </perfect-scrollbar>
+            <ng-container *ngIf="chatService.device['isMobile']">
+                <span class="send-mobile" matRipple (click)="sendMessage($event)">
+                    <img src="../../../assets/imgs/373675-200.png" alt="">
+                </span>
+            </ng-container>
+            <ng-container *ngIf="chatService.device['isMobile']">
+                <span class="right-corner"></span>
+            </ng-container>
+        </div>
+
+        <ng-container *ngIf="chatService.device['isDesktop']">
+            <div class="wrap-btn">
+                <div class="send-btn" (click)="sendMessage($event)">
+                    <img class="send-img" src="../../../assets/imgs/373675-200.png" alt="">
+                </div>
+            </div>
+        </ng-container>
+
+        <div class="wrap-btn" (click)="chatService.device['isDesktop'] ? openSmiles() : openSmilesList()">
+            <div class="smile-btn">
+                <img class="smile-img" src="../../../assets/imgs/smile.png" alt="" #smileImg>
+            </div>
+        </div>
+    </div>
+</div>

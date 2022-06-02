@@ -1,0 +1,54 @@
+::ng-deep .mat-dialog-container {
+    padding: 0;
+}
+
+.dialog-wrapper {
+    overflow: hidden;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    .dialog-content-wrapper {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dialog-btns {
+        display: flex;
+        justify-content: space-between;
+        width: 70%;
+    }
+
+    h1 {
+        font-family: "Montserrat Alternates", sans-serif;
+        text-align: center;
+        font-size: 28px;
+    }
+
+    ::ng-deep .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
+        border-radius: 50px;
+    }
+
+}
+
+.light {
+    background: #e6e7f2;
+    color: black;
+
+    ::ng-deep .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
+        background: rgba(255, 255, 255, 0.11);
+    }
+}
+
+.dark {
+    background: #273038;
+    color: white;
+
+    ::ng-deep .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
+        background: rgba(255, 255, 255, 0.11);
+    }
+}

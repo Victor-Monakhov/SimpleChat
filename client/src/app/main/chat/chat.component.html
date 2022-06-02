@@ -1,0 +1,24 @@
+<div class="chat-wrapper" [ngClass]="{'dark': theme === 'dark', 'light': theme === 'light'}">
+    <ng-container *ngIf="rooms">
+        <mat-drawer-container autosize class="sidenav-wrapper">
+            <mat-drawer class="sidenav-content"
+                        [(opened)]="opened"
+                        [mode]="chatService.device['isDesktop'] ? 'side' : 'over'">
+                <app-room-list [rooms]="rooms | updateRooms"
+                               [unread]="unreadInRooms"
+                               (onSelectedRoom)="toggleRoom($event)"
+                               (onCreateRoom)="createRoom()"
+                               (closeList)="openSideNav()">
+                </app-room-list>
+            </mat-drawer>
+            <app-room [currentRoom]="selectedRoom"
+                      [newMessage]="newMessage"
+                      [unreadInRooms]="overallUnreadMessages"
+                      (leaveFromChat)="leaveRoom($event)"
+                      (unreadMessages)="changeUnreadByRoomId($event)"
+                      (openList)="openSideNav()"
+                      (showParticipants)="showParticipants.emit()">
+            </app-room>
+        </mat-drawer-container>
+    </ng-container>
+</div>

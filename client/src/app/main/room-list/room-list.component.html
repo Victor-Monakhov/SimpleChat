@@ -1,0 +1,60 @@
+<div class="room-list-wrapper" [ngClass]="{'dark': theme === 'dark', 'light': theme === 'light'}">
+    <div class="list-title">
+        <p>Main menu</p>
+        <button mat-button matRipple (click)="closeList.emit()">
+            <mat-icon>arrow_back_ios</mat-icon>
+        </button>
+    </div>
+
+    <div class="search-rooms">
+        <div class="theme-chooser">
+            <mat-icon class="theme-icon">wb_sunny</mat-icon>
+            <mat-slide-toggle
+                class="example-margin"
+                [checked]="theme === 'dark'"
+                (change)="toggleTheme()"
+            >
+            </mat-slide-toggle>
+            <mat-icon class="theme-icon">brightness_3</mat-icon>
+        </div>
+        <div class="add-btn" (click)="createRoom()" matRipple>
+            <mat-icon>add</mat-icon>
+            <span>Create new room</span>
+        </div>
+        <input matInput placeholder="Search room..."
+               [(ngModel)]="searchText"
+               *ngIf="!isSearchRoomList">
+        <input matInput placeholder="Search room..."
+               [(ngModel)]="searchText"
+               (input)="searchRooms()"
+               *ngIf="isSearchRoomList">
+        <mat-slide-toggle class="searchToggle"
+                          (change)="toggleSearch()">
+            {{isSearchRoomList ? 'Globally' : 'Locally'}}
+        </mat-slide-toggle>
+    </div>
+    <div class="room-list">
+        <perfect-scrollbar [config]="config">
+            <mat-list *ngIf="!isSearchRoomList">
+                <mat-list-item class="room-list-item" *ngFor="let room of rooms | search: searchText"
+                               (click)="goToRoom(room)">
+                    <mat-divider></mat-divider>
+                    <div class="unread" *ngIf="unread[room._id] > 0"><span>{{unread[room._id]}}</span></div>
+                    <div class="room-title-wrapper">
+                        <span class="room-title">{{room.title}}</span>
+                        <small *ngIf="room._id !== 'common'">Last action: {{room.lastAction | date: 'HH:mm:ss - dd.MM.yy'}}</small>
+                    </div>
+
+                </mat-list-item>
+            </mat-list>
+            <mat-list *ngIf="isSearchRoomList">
+                <mat-list-item class="room-list-item" *ngFor="let room of searchedRooms">
+                    <mat-divider></mat-divider>
+                    <div class="room-title-wrapper">
+                        <p class="room-title">{{room.title}}</p>
+                    </div>
+                </mat-list-item>
+            </mat-list>
+        </perfect-scrollbar>
+    </div>
+</div>

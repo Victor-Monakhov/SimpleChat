@@ -1,0 +1,172 @@
+::ng-deep .mat-dialog-container {
+    padding: 0;
+}
+
+::ng-deep .mat-option-text {
+    img {
+        position: relative;
+        top: 5px;
+        border-radius: 50px;
+        margin-right: 10px;
+    }
+}
+
+.dialog-wrapper {
+    padding: 24px;
+    position: relative;
+    height: 100%;
+    box-sizing: border-box;
+
+    mat-slide-toggle {
+        margin-bottom: 20px;
+    }
+
+    .dialog-content-wrapper {
+        padding: 20px;
+    }
+
+
+    .avatar {
+        width: 15px;
+        height: 15px;
+        border-radius: 50px;
+        background: black;
+
+    }
+
+    .avatar {
+        border-radius: 50px;
+    }
+
+    h1 {
+        font-family: "Montserrat Alternates", sans-serif;
+        text-align: center;
+        font-size: 28px;
+    }
+
+    .part-wrapper {
+        display: flex;
+        align-items: flex-start;
+
+        h2 {
+            margin-right: 20px;
+        }
+    }
+
+    .close-btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: transparent !important;
+
+        i {
+            font-size: 30px;
+        }
+    }
+
+    .part-input {
+        margin-right: 30px;
+    }
+
+    .done {
+        position: relative;
+        top: 10px;
+        right: 10px;
+    }
+
+    .create-btn {
+        font-size: 25px !important;
+        font-weight: 300;
+        padding: 5px 20px;
+    }
+
+    ::ng-deep .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
+        padding: 0 10px;
+        min-width: 20px;
+        min-height: 0;
+        border-radius: 50px;
+    }
+
+    ::ng-deep .mat-form-field-infix {
+        width: 310px;
+    }
+
+    ::ng-deep .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
+        border-radius: 50px;
+    }
+}
+
+.light {
+    color: black;
+
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: #3071c2;
+    }
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+        background-color: #233f7d;
+    }
+
+    ::ng-deep .mat-list-item {
+        color: black;
+    }
+
+    ::ng-deep .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
+        background: rgba(0, 0, 0, 0.18);
+    }
+
+    ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-label {
+        color: black;
+    }
+
+    ::ng-deep .mat-form-field.mat-form-field-invalid .mat-form-field-label {
+        color: #f44336;
+    }
+
+    ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+        background-color: black;
+    }
+
+    ::ng-deep mat-form-field.mat-focused .mat-form-field-ripple {
+        background-color: black;
+    }
+
+}
+
+.dark {
+    color: white;
+    background: #273038;
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: #f3a311;
+    }
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+        background-color: #a97010;
+    }
+
+    ::ng-deep .mat-list-item {
+        color: white;
+    }
+
+    ::ng-deep .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
+        background: rgba(255, 255, 255, 0.11);
+    }
+
+    ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-label {
+        color: white;
+    }
+
+    ::ng-deep .mat-form-field.mat-form-field-invalid .mat-form-field-label {
+        color: #f44336;
+    }
+
+    ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+        background-color: white;
+    }
+
+    ::ng-deep mat-form-field.mat-focused .mat-form-field-ripple {
+        background-color: white;
+    }
+}
