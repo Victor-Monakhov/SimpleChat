@@ -22,7 +22,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {DialogInvitingRoomComponent} from '../../dialog-inviting-room/dialog-inviting-room.component';
 import {EmojifyPipe} from 'angular-emojify';
 import {DialogRoomSettingsComponent} from '../../dialog-room-settings/dialog-room-settings.component';
-import {log} from 'util';
+//import {log} from 'util';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {SmilesComponent} from '../smiles/smiles.component';
 import {MobileSmileComponent} from '../mobile-smile/mobile-smile.component';

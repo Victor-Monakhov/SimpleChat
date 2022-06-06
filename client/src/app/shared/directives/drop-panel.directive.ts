@@ -8,7 +8,7 @@ import {
     Output,
     SimpleChanges,
     TemplateRef,
-    ViewContainerRef
+    ViewContainerRef,
 } from '@angular/core';
 import {IDropPanel} from '../interfaces/drop-panel.interface';
 import {Overlay, OverlayRef} from '@angular/cdk/overlay';
@@ -16,11 +16,10 @@ import {TemplatePortal} from '@angular/cdk/portal';
 import {merge, Observable} from 'rxjs';
 
 @Directive({
-    // tslint:disable-next-line:directive-selector
     selector: '[dropPanel]',
-    // tslint:disable-next-line:no-host-metadata-property
+
     host: {
-        '(click)': 'onDrop(true)',
+        '(click)': 'onDrop(true)'
     }
 })
 export class DropPanelDirective implements OnChanges {
@@ -32,14 +31,14 @@ export class DropPanelDirective implements OnChanges {
     private isClick: boolean = false;
     private closeHandler;
 
-    constructor(public overlay: Overlay,
+    constructor (public overlay: Overlay,
                 public elementRef: ElementRef,
                 public viewContainerRef: ViewContainerRef,
                 @Optional() public overlayRef: OverlayRef) {
 
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges (changes: SimpleChanges) {
         if (this.trigger) {
             this.onDrop(false);
         } else if (!this.isClick) {

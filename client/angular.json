@@ -51,7 +51,6 @@
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": false,
-                            "extractCss": true,
                             "namedChunks": false,
                             "aot": true,
                             "extractLicenses": true,
@@ -69,8 +68,29 @@
                                     "maximumError": "10kb"
                                 }
                             ]
+                        },
+                        "development": {
+                            "buildOptimizer": false,
+                            "optimization": false,
+                            "vendorChunk": true,
+                            "extractLicenses": false,
+                            "sourceMap": true,
+                            "namedChunks": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "6kb",
+                                    "maximumError": "10kb"
+                                }
+                            ]
                         }
-                    }
+                    },
+                    "defaultConfiguration": "production"
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
@@ -78,10 +98,14 @@
                         "browserTarget": "client:build"
                     },
                     "configurations": {
+                        "development": {
+                            "browserTarget": "client:build:development"
+                        },
                         "production": {
                             "browserTarget": "client:build:production"
                         }
-                    }
+                    },
+                    "defaultConfiguration": "development"
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -108,15 +132,11 @@
                     }
                 },
                 "lint": {
-                    "builder": "@angular-devkit/build-angular:tslint",
+                    "builder": "@angular-eslint/builder:lint",
                     "options": {
-                        "tsConfig": [
-                            "tsconfig.app.json",
-                            "tsconfig.spec.json",
-                            "e2e/tsconfig.json"
-                        ],
-                        "exclude": [
-                            "**/node_modules/**"
+                        "lintFilePatterns": [
+                            "src/**/*.ts",
+                            "src/**/*.html"
                         ]
                     }
                 },
@@ -135,5 +155,12 @@
             }
         }
     },
-    "defaultProject": "client"
+    "defaultProject": "client",
+    "cli": {
+        "cache": {
+            "enabled": false
+        },
+        "defaultCollection": "@angular-eslint/schematics",
+        "analytics": "643fd8f1-fc1b-4853-b021-879530a09931"
+    }
 }
