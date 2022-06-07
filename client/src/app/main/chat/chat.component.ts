@@ -1,14 +1,16 @@
 import {ChangeDetectorRef, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {Room} from "../../shared/models/Room";
-import {ChatService} from "../../shared/services/chat.service";
-import {SocketService} from "../../shared/services/socket.service";
-import {AuthService} from "../../shared/services/auth.service";
-import {MatDialog} from "@angular/material/dialog";
-import {DialogAddingRoomComponent} from "../../dialog-adding-room/dialog-adding-room.component";
-import {DialogInvitationComponent} from "../../dialog-invitation/dialog-invitation.component";
-import {LocalStorageService} from "../../shared/services/local-storage.service";
-import {MatBadge} from "@angular/material/badge";
-import {SmilesComponent} from "../smiles/smiles.component";
+import {IRoom} from '../../shared/models/IRoom';
+import {ChatService} from '../../shared/services/chat.service';
+import {SocketService} from '../../shared/services/socket.service';
+import {AuthService} from '../../shared/services/auth.service';
+import {MatDialog} from '@angular/material/dialog';
+import {DialogAddingRoomComponent} from '../../dialog-adding-room/dialog-adding-room.component';
+import {DialogInvitationComponent} from '../../dialog-invitation/dialog-invitation.component';
+import {LocalStorageService} from '../../shared/services/local-storage.service';
+import {MatBadge} from '@angular/material/badge';
+import {SmilesComponent} from '../smiles/smiles.component';
+import {SubSink} from 'subsink';
+import {IEntryData} from '../../shared/models/IEntryData.interface';
 
 @Component({
     selector: 'app-chat',
@@ -20,85 +22,93 @@ export class ChatComponent implements OnInit {
 
     @ViewChild('search', {static: false}) search: ElementRef;
     @ViewChild(MatBadge, {static: false}) badge: MatBadge;
-
-    @Output() showParticipants: EventEmitter<any> = new EventEmitter<any>();
-
+    // -----------------------------------------------------------------------------------------------------------
+    private subs: SubSink = new SubSink();
+    public rooms: IRoom[] = [];
+    public currentRoom: IRoom;
+    public unreadInRooms: object = {};
+    // -----------------------------------------------------------------------------------------------------------
     public opened: boolean = false;
-    public rooms: Room[];
+
     public newMessage: object = {};
     public me: string;
-    public selectedRoom: Room;
-    public unreadInRooms: object = {};
+
     public theme: string = 'dark';
-    public listOfRooms: Room[] = [];
+    public listOfRooms: IRoom[] = [];
     public overallUnreadMessages: number = 0;
 
-    constructor(public chatService: ChatService,
-                private socketService: SocketService,
-                private authService: AuthService,
-                public dialog: MatDialog,
-                private cdr: ChangeDetectorRef) {
+    public constructor(public chatService: ChatService,
+                       private socketService: SocketService,
+                       private authService: AuthService,
+                       public dialog: MatDialog,
+                       private cdr: ChangeDetectorRef) {
     }
 
     public ngOnInit(): void {
         if (this.authService.isAuthenticated()) {
             this.chatService.theme.subscribe(selectedTheme => this.theme = selectedTheme);
             this.me = LocalStorageService.getUser()['id'];
-            this.socketService.listen('join').subscribe(data => {
-                this.rooms = data.rooms;
-                this.rooms = this.rooms.map((room, index) => {
-                    this.unreadInRooms[room._id] = 0;
-                    room.lastAction = new Date(room.lastAction);
-                    return {...room, index};
-                });
-                this.listOfRooms = this.rooms;
-                this.selectedRoom = this.rooms.find((room) => room._id === LocalStorageService.getlastRoomId()) || this.rooms[0];
-            });
-            this.socketService.listen('newMessage').subscribe(data => {
-                this.newMessage = data;
-                const tempRoom = this.rooms.find((room) => room._id === data.room);
-                this.rooms = this.rooms.map((room) => {
-                    if (room._id === tempRoom._id) {
-                        room.lastAction = new Date();
-                    }
-                    return room;
-                });
-                if (data.room !== this.selectedRoom._id) {
-                    this.unreadInRooms[data.room] += 1;
-                    this.recountUnread();
-                }
-                this.listOfRooms = this.rooms;
-            });
-            this.socketService.listen('invitation').subscribe(data => this.openInvitation(data));
-            this.socketService.listen('newRoom').subscribe(data => {
-                data.lastAction = new Date(data.lastAction);
-                this.rooms.unshift(data);
-                this.unreadInRooms[data._id] = 0;
-                this.rooms = this.rooms.map((room, index) => ({...room, index}));
-                this.listOfRooms = this.rooms;
-            });
-            this.socketService.listen('userLeft').subscribe(data => {
-                if (data.userId === this.me) this.leaveRoom(data.roomId);
-            });
-            this.socketService.listen('roomDeleted').subscribe(data => {
-                this.rooms = this.rooms.filter(room => room._id !== data.id);
-                this.listOfRooms = this.rooms;
-                delete this.unreadInRooms[data.id];
-                this.selectedRoom = this.rooms[0];
-            });
-            this.socketService.listen('roomRename').subscribe(data => {
-                this.rooms = this.rooms.map(room => {
-                    if (room._id === data.id) room.title = data.title;
-                    return room;
-                });
-                this.listOfRooms = this.rooms;
-            });
-            this.socketService.listen('privacyChanged').subscribe(data => {
-                this.rooms = this.rooms.map(room => {
-                    if (room._id === data.id) room.isPublic = data.isPublic;
-                    return room;
-                });
-            })
+
+            // -----------------------------------------------------------------------------------------------------------
+            this.subs.add(
+                this.socketService.listen('join').subscribe((data) => {
+                    (data as IEntryData).rooms.forEach((room) => {
+                        this.unreadInRooms[room._id] = 0;
+                        room.lastAction = new Date(room.lastAction);
+                        this.rooms.push(room);
+                    });
+                    this.listOfRooms = this.rooms;
+                    this.currentRoom = this.rooms.find(
+                        (room) => room._id === LocalStorageService.getlastRoomId()) || this.rooms[0];
+                })
+            );
+            // -----------------------------------------------------------------------------------------------------------
+
+            // this.socketService.listen('newMessage').subscribe(data => {
+            //     this.newMessage = data;
+            //     const tempRoom = this.rooms.find((room) => room._id === data.room);
+            //     this.rooms = this.rooms.map((room) => {
+            //         if (room._id === tempRoom._id) {
+            //             room.lastAction = new Date();
+            //         }
+            //         return room;
+            //     });
+            //     if (data.room !== this.selectedRoom._id) {
+            //         this.unreadInRooms[data.room] += 1;
+            //         this.recountUnread();
+            //     }
+            //     this.listOfRooms = this.rooms;
+            // });
+            // this.socketService.listen('invitation').subscribe(data => this.openInvitation(data));
+            // this.socketService.listen('newRoom').subscribe(data => {
+            //     data.lastAction = new Date(data.lastAction);
+            //     this.rooms.unshift(data);
+            //     this.unreadInRooms[data._id] = 0;
+            //     this.rooms = this.rooms.map((room, index) => ({...room, index}));
+            //     this.listOfRooms = this.rooms;
+            // });
+            // this.socketService.listen('userLeft').subscribe(data => {
+            //     if (data.userId === this.me) this.leaveRoom(data.roomId);
+            // });
+            // this.socketService.listen('roomDeleted').subscribe(data => {
+            //     this.rooms = this.rooms.filter(room => room._id !== data.id);
+            //     this.listOfRooms = this.rooms;
+            //     delete this.unreadInRooms[data.id];
+            //     this.selectedRoom = this.rooms[0];
+            // });
+            // this.socketService.listen('roomRename').subscribe(data => {
+            //     this.rooms = this.rooms.map(room => {
+            //         if (room._id === data.id) room.title = data.title;
+            //         return room;
+            //     });
+            //     this.listOfRooms = this.rooms;
+            // });
+            // this.socketService.listen('privacyChanged').subscribe(data => {
+            //     this.rooms = this.rooms.map(room => {
+            //         if (room._id === data.id) room.isPublic = data.isPublic;
+            //         return room;
+            //     });
+            // })
         }
     }
 
@@ -112,7 +122,7 @@ export class ChatComponent implements OnInit {
     public leaveRoom(roomId: string): void {
         this.rooms = this.rooms.filter(room => room._id !== roomId);
         this.rooms = this.rooms.map((room, index) => ({...room, index}));
-        this.selectedRoom = this.rooms[0];
+        this.currentRoom = this.rooms[0];
     }
 
     public openSideNav(): void {
@@ -126,7 +136,9 @@ export class ChatComponent implements OnInit {
             hasBackdrop: true
         });
         const aSub = dialogRef.afterClosed().subscribe(result => {
-            if (result) this.socketService.emit('createRoom', result);
+            if (result) {
+                this.socketService.emit('createRoom', result);
+            }
             aSub.unsubscribe();
         });
     }
@@ -161,7 +173,7 @@ export class ChatComponent implements OnInit {
     }
 
     public toggleRoom(id: string): void {
-        this.rooms.forEach(room => id === room._id ? this.selectedRoom = room : false);
+        this.rooms.forEach(room => id === room._id ? this.currentRoom = room : false);
     }
 }
 

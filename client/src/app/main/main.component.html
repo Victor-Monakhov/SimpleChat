@@ -1,16 +1,18 @@
-<div class="wrapper" [ngClass]="{'dark': theme === 'dark', 'light': theme === 'light'}">
-    <app-chat (showParticipants)="showSideNav()"></app-chat>
+<app-header></app-header>
+<div class="wrapper">
+    <app-room-list class="side-menu"
+                   [rooms]="rooms | updateRooms"
+                   [unread]="unreadInRooms"
+                   (onSelectedRoom)="toggleRoom($event)"
+                   (onCreateRoom)="createRoom()"
+                   (closeList)="openSideNav()">
+    </app-room-list>
+    <app-chat></app-chat>
     <div class="flip-card">
-        <div #cardInner class="flip-card-inner">
-<!--           <div class="flip-card-front">-->
-                <app-contact-list class="flip-card-front"
-                                  [isDisplayed]="isFlipped"
-                                  (closeParticipants)="showSideNav()"></app-contact-list>
-<!--            </div>-->
-<!--            <div class="flip-card-back">-->
-                <app-smiles class="flip-card-back"
-                            (closeParticipants)="showSideNav()"></app-smiles>
-<!--            </div>-->
+        <div class="flip-card-inner"
+             [ngClass]="{'rotate' : isFlipped$ | async}">
+            <app-contact-list class="flip-card-front"></app-contact-list>
+            <app-smiles class="flip-card-back"></app-smiles>
         </div>
     </div>
 </div>
@@ -20,8 +22,7 @@
                 [dropPanel]="contactList"
                 [trigger]="contactListTrigger$ | async"
                 (triggerEvent)="contactListTriggerHandler($event)">
-    <app-contact-list [isDisplayed]="isFlipped"
-                      (closeParticipants)="showSideNav()"></app-contact-list>
+    <app-contact-list [class]="theme"></app-contact-list>
 </app-drop-panel>
 
 

@@ -1,6 +1,7 @@
 export enum NAVIGATE {
     CHAT = 'chat',
     WELCOME = 'welcome',
+    AUTH = 'auth'
 }
 
 export enum WIN_SIZES {

@@ -1,10 +1,10 @@
-import {User} from "./User";
+import {IUser} from './IUser';
 
-export interface Room {
+export interface IRoom {
     _id?: string;
     title?: string;
-    users?: User[];
-    creator?: User;
+    users?: IUser[];
+    creator?: IUser;
     index?: number;
     lastAction?: Date;
     isPublic?: boolean;

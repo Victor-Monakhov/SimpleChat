@@ -13,7 +13,7 @@ import {PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
 import {PERFECT_SCROLLBAR_CONFIG} from 'ngx-perfect-scrollbar';
 import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
 import {MainComponent} from './main/main.component';
-import {HeaderComponent} from './header/header.component';
+import {HeaderComponent} from './main/header/header.component';
 import {ChatComponent} from './main/chat/chat.component';
 import {ContactListComponent} from './main/contact-list/contact-list.component';
 import {RoomComponent} from './main/room/room.component';

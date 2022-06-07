@@ -23,7 +23,7 @@ const routes: Routes = [
 
     {path: NAVIGATE.CHAT, component: MainComponent, canActivate: [AuthGuard]},
 
-    {path: 'auth', component: AuthComponent},
+    {path: NAVIGATE.AUTH, component: AuthComponent},
 ];
 
 @NgModule({

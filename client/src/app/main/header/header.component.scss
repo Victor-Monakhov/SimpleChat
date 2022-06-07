@@ -1,0 +1,96 @@
+@import "mixins.scss";
+@import "colors.scss";
+@import "variables.scss";
+
+.nav-wrapper {
+    @include media-property(padding, 10px, 10px 20px, 10px 30px);
+    height: calc(#{$header-height} - 20px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px 10px 30px;
+
+    .nav-menu {
+        display: flex;
+        align-items: center;
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            column-gap: 20px;
+            width: fit-content;
+            justify-content: center;
+            font-family: 'Quicksand', sans-serif;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            .avatar {
+                border-radius: 50%;
+                width: 3rem;
+                height: 3rem;
+
+                img {
+                    border-radius: 50px;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+
+        .log-out {
+            margin-left: 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.3s;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 300;
+            display: flex;
+            justify-content: center;
+            border-radius: 50px;
+            padding: 5px 10px;
+            color: $white;
+            font-size: 1rem;
+            white-space: nowrap;
+
+            &:hover {
+                box-shadow: 0 0 7px $white;
+
+                span {
+                    filter: drop-shadow(0 5px 15px $white);
+                }
+            }
+        }
+    }
+}
+
+:host-context(.light) {
+    .nav-wrapper{
+        transition: 0.3s;
+        background: $background-light;
+
+        .user-info {
+            transition: 0.3s;
+            color: $black;
+        }
+
+        .log-out{
+            background-color: $blackA04;
+        }
+    }
+}
+
+:host-context(.dark) {
+    .nav-wrapper{
+        transition: 0.3s;
+        background: $background-dark;
+
+        .user-info {
+            color: $whiteA07;
+        }
+
+        .log-out{
+            background-color: $blackA05;
+        }
+    }
+}

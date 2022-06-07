@@ -15,20 +15,22 @@ import {NAVIGATE} from '../../app.config';
     providedIn: 'root'
 })
 export class AuthGuard implements CanActivate, CanActivateChild {
-    constructor(private auth: AuthService,
-                private router: Router) {
+    public constructor(private auth: AuthService,
+                       private router: Router) {
     }
 
-    public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean |
+        UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         if (this.auth.isAuthenticated()) {
             return of(true);
         } else {
-            this.router.navigate([`/${NAVIGATE.WELCOME}`]);
+            this.router.navigate([`/${NAVIGATE.WELCOME}`]).then();
             return of(false);
         }
     }
 
-    public canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    public canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean |
+        UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         return this.canActivate(childRoute, state);
     }
 

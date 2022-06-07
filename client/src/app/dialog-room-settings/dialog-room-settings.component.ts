@@ -2,7 +2,7 @@ import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {LocalStorageService} from "../shared/services/local-storage.service";
 import {PerfectScrollbarConfigInterface} from "ngx-perfect-scrollbar";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Room} from "../shared/models/Room";
+import {IRoom} from "../shared/models/IRoom";
 import {ChatService} from "../shared/services/chat.service";
 
 @Component({
@@ -20,7 +20,7 @@ export class DialogRoomSettingsComponent implements OnInit {
     public theme: string = 'dark';
 
     constructor(public dialogRef: MatDialogRef<DialogRoomSettingsComponent>,
-                @Inject(MAT_DIALOG_DATA) public room: Room,
+                @Inject(MAT_DIALOG_DATA) public room: IRoom,
                 private chatService: ChatService) {}
 
     public ngOnInit(): void {

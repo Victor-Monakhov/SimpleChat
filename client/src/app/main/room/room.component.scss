@@ -44,6 +44,10 @@ $screen-xl-min: 1200px;
         height: auto;
     }
 
+    .menu-btn{
+        //@include media-property(display, none, none, inline);
+    }
+
     button {
         transition: 0.3s;
         cursor: pointer;

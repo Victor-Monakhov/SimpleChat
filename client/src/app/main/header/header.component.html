@@ -1,0 +1,13 @@
+<div class="nav-wrapper">
+    <div class="nav-menu" *ngIf="user">
+        <div class="user-info">
+            <div class="avatar">
+                <img [src]="user.avatar" alt="avatar">
+            </div>
+            {{user.name}}
+        </div>
+        <div class="log-out" (click)="logOut()">
+            <span>Log out</span>
+        </div>
+    </div>
+</div>

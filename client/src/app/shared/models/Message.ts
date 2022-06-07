@@ -1,9 +1,9 @@
-import {User} from "./User";
+import {IUser} from "./IUser";
 
 export interface Message {
     createdAt?: Date;
     content?: string;
-    creator?: User;
+    creator?: IUser;
     room?: string;
     _id?: string;
     isSystemMessage?: boolean;

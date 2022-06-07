@@ -1,5 +1,5 @@
 import {
-    Component, EventEmitter,
+    Component, EventEmitter, HostBinding,
     Input, OnDestroy,
     OnInit, Output,
     ViewChild,
@@ -23,10 +23,7 @@ import {SubSink} from 'subsink';
     styleUrls: ['./contact-list.component.scss']
 })
 export class ContactListComponent implements OnInit, OnDestroy {
-    @Input() isDisplayed: boolean;
-    @Output() closeParticipants: EventEmitter<any> = new EventEmitter<any>();
-    @ViewChild('contextmenu', {static: false}) public contextmenu: ContextMenuComponent;
-
+    @ViewChild('contextmenu') public contextmenu: ContextMenuComponent;
     private subs: SubSink = new SubSink();
     private me: string = LocalStorageService.getUser()['id'];
     private blacklist: string[] = [];
@@ -35,7 +32,6 @@ export class ContactListComponent implements OnInit, OnDestroy {
     public list: object[] = [];
     public roomId: string = '';
     public config: PerfectScrollbarConfigInterface = {wheelSpeed: 0.2, scrollingThreshold: 0};
-    public theme: string = 'dark';
     public menuItems: MenuItemModel[] = [
         {
             id: 'invite',
@@ -51,14 +47,14 @@ export class ContactListComponent implements OnInit, OnDestroy {
             iconCss: 'e-cm-icons e-ban'
         }];
 
-    constructor(private socketService: SocketService,
+    public constructor(private socketService: SocketService,
                 private chatService: ChatService,
                 private authService: AuthService,
                 private breakpointObserver: BreakpointObserver) {
         this.subs.add(
             breakpointObserver
                 .observe([`(min-width: ${WIN_SIZES.MD}px)`])
-                .subscribe((bpState) => {
+                .subscribe(() => {
                     this.onClose();
                 })
         );
@@ -66,7 +62,6 @@ export class ContactListComponent implements OnInit, OnDestroy {
 
     public ngOnInit(): void {
         if (this.authService.isAuthenticated()) {
-            this.chatService.theme.subscribe(selectedTheme => this.theme = selectedTheme);
             this.blacklist = LocalStorageService.getBlacklist();
             this.chatService.currentRoomUsers.subscribe(users => {
                 this.list = users;

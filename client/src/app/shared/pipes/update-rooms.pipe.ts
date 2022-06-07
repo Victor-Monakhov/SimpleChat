@@ -1,11 +1,11 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {Room} from "../models/Room";
+import {IRoom} from "../models/IRoom";
 
 @Pipe({
     name: 'updateRooms'
 })
 export class UpdateRoomsPipe implements PipeTransform {
-    transform(rooms: Room[]): Room[] {
+    transform(rooms: IRoom[]): IRoom[] {
         rooms.sort((prevRoom, nextRoom) => {
             if (prevRoom.lastAction < nextRoom.lastAction) {
                 return 1;

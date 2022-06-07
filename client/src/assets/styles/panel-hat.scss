@@ -1,0 +1,26 @@
+.panel-hat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    width: calc(100% - 40px);
+    user-select: none;
+    font-family: 'Montserrat Alternates', sans-serif;
+    height: 50px;
+    min-height: 50px;
+
+    p {
+        margin: 0;
+        font-weight: 400;
+        font-size: 30px;
+    }
+
+    .close-panel {
+        font-size: 24px;
+        cursor: pointer;
+
+        &:active {
+            font-size: 22px;
+        }
+    }
+}

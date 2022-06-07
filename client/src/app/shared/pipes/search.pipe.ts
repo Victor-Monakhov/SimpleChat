@@ -1,11 +1,11 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {Room} from "../models/Room";
+import {IRoom} from "../models/IRoom";
 
 @Pipe({
     name: 'search'
 })
 export class SearchPipe implements PipeTransform {
-    transform(rooms: Room[], searchText: string): Room[] {
+    transform(rooms: IRoom[], searchText: string): IRoom[] {
         return rooms.filter(room => room.title.toLowerCase().includes(searchText.toLowerCase()));
     }
 }

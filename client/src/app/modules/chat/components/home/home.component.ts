@@ -10,50 +10,9 @@ import {LocalStorageService} from '../../../../shared/services/local-storage.ser
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
-    @ViewChild('cardInner', {static: false}) card: ElementRef;
-    @ViewChild('contextmenu', {static: false}) public contextmenu: ContextMenuComponent;
-    public isFlipped: boolean = false;
-    public isLoaded: boolean = false;
-    public content: string = '';
-    public theme: string = 'dark';
-    public opened: boolean = false;
-
-    constructor(private chatService: ChatService,
-                private authService: AuthService,
-                private socketService: SocketService) {
-        if (this.authService.isAuthenticated()) {
-            this.socketService.connect();
-        }
-    }
+export class HomeComponent implements OnInit {
 
     public ngOnInit(): void {
-        this.chatService.init();
-        this.chatService.theme.subscribe(selectedTheme => this.theme = selectedTheme);
-        this.chatService.flipCard.subscribe(() => {
-            if (this.isLoaded) this.flipCardToggle();
-        });
-        const aSub = this.chatService.getBlacklist().subscribe(blacklist => {
-            LocalStorageService.setBlacklist(blacklist);
-            aSub.unsubscribe();
-        });
-    }
-
-    public ngAfterViewInit(): void {
-        this.isLoaded = true;
-    }
-
-    public showSideNav(): void {
-        this.opened = !this.opened;
-    }
-
-    public flipCardToggle(): void {
-        if (!this.isFlipped) {
-            this.card.nativeElement.style.transform = 'rotateY(180deg)';
-            this.isFlipped = true;
-        } else {
-            this.card.nativeElement.style.transform = '';
-            this.isFlipped = false;
-        }
+        return;
     }
 }

@@ -8,7 +8,7 @@ import {
     SimpleChanges,
     ViewChild
 } from '@angular/core';
-import {Room} from '../../shared/models/Room';
+import {IRoom} from '../../shared/models/IRoom';
 import {ChatService} from '../../shared/services/chat.service';
 import {Message} from '../../shared/models/Message';
 import {
@@ -17,7 +17,7 @@ import {
 } from 'ngx-perfect-scrollbar';
 import {SocketService} from '../../shared/services/socket.service';
 import {LocalStorageService} from '../../shared/services/local-storage.service';
-import {User} from '../../shared/models/User';
+import {IUser} from '../../shared/models/IUser';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogInvitingRoomComponent} from '../../dialog-inviting-room/dialog-inviting-room.component';
 import {EmojifyPipe} from 'angular-emojify';
@@ -39,20 +39,20 @@ import {Option} from '../../shared/models/Option';
     styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
-    @Input() currentRoom: Room;
+    @Input() currentRoom: IRoom;
     @Input() newMessage: object | boolean;
     @Input() unreadInRooms: number;
 
     @Output() leaveFromChat: EventEmitter<any> = new EventEmitter<any>();
     @Output() unreadMessages: EventEmitter<any> = new EventEmitter<any>();
     @Output() openList: EventEmitter<any> = new EventEmitter<any>();
-    @Output() showParticipants: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChild(PerfectScrollbarComponent, {static: false}) componentRef: PerfectScrollbarComponent;
     @ViewChild('smileImg', {static: false}) smileImg: ElementRef;
     @ViewChild('inputText', {static: false}) input: ElementRef;
     @ViewChild('messagecontextmenu', {static: false}) public contextmenu: ContextMenuComponent;
 
+    private isFlipCard: boolean = false;
     private aSub: Subscription = new Subscription();
     private content: string = '';
     private emoji: EmojifyPipe = new EmojifyPipe();
@@ -81,7 +81,7 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
     };
     public overallUnreadMessages: number = 0;
     public messages: Message[] = [];
-    public creator: User;
+    public creator: IUser;
     public me: string = '';
     public users: object[] = [];
     public config: PerfectScrollbarConfigInterface = {scrollingThreshold: 0};
@@ -273,6 +273,8 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
         this.unreadMessages.emit({unread: this.amountOfUnread, roomId: this.currentRoom._id});
     }
 
+    // -----------------------------------------------------------------------------------------------------------
+
     private updateRoom(): void {
         this.isEditing = false;
         this.users = [];
@@ -309,6 +311,14 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
             this.messageRequest();
         }
     }
+    private updateList(): void {
+        this.chatService.currentRoomUsers.next(Object.values(this.users));
+    }
+
+
+    // -----------------------------------------------------------------------------------------------------------
+
+
 
     public onViewportChange(event: any): void {
         if (this.isLoadedTemplate) {
@@ -352,10 +362,6 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
         }
     }
 
-    private updateList(): void {
-        this.chatService.currentRoomUsers.next(Object.values(this.users));
-    }
-
     private animateSmile(): void {
         if (!this.isSmiles) {
             this.smileImg.nativeElement.style.filter = 'invert(100%) drop-shadow(0px 5px 5px black)';
@@ -375,7 +381,8 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
     }
 
     public openSmiles(): void {
-        this.chatService.flipCard.next(true);
+        this.isFlipCard = !this.isFlipCard
+        this.chatService.flipCard.next(this.isFlipCard);
     }
 
     public inviteUsers(): void {

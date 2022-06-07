@@ -1,11 +1,14 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {config} from "../config";
-import {Message} from "../models/Message";
-import {SocketService} from "./socket.service";
-import {DeviceDetectorService} from "ngx-device-detector";
-import {Option} from "../models/Option";
+import {config} from '../config';
+import {Message} from '../models/Message';
+import {SocketService} from './socket.service';
+import {DeviceDetectorService} from 'ngx-device-detector';
+import {Option} from '../models/Option';
+import {LocalStorageService} from './local-storage.service';
+import {IUser} from '../models/IUser';
+import {AuthService} from './auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -13,27 +16,19 @@ import {Option} from "../models/Option";
 export class ChatService {
     public isContactList: Subject<boolean> = new Subject<boolean>();
     public flipCard: Subject<boolean> = new Subject<boolean>();
+    public theme: Subject<string> = new Subject<string>();
+    public user?: IUser;
 
     public currentRoomUsers: BehaviorSubject<object[]> = new BehaviorSubject<object[]>([]);
-    public theme: BehaviorSubject<string> = new BehaviorSubject<string>('light');
     public device: object = {isDesktop: 1, isMobile: 0, isTablet: 0};
     public showContextMenu: BehaviorSubject<{ event: MouseEvent; options: Option[] }> = new BehaviorSubject<any>(null);
     public emitOption: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private http: HttpClient,
-                private socketService: SocketService,
-                private deviceDetector: DeviceDetectorService) {
-    }
-
-    public init(): void {
-        this.device = {
-            isDesktop: this.deviceDetector.isDesktop(),
-            isMobile: this.deviceDetector.isMobile(),
-            isTablet: this.deviceDetector.isTablet(),
-        };
-        this.socketService.listen('colorChanged').subscribe(theme => {
-            this.theme.next(theme);
-        });
+    public constructor(private http: HttpClient,
+                       private socketService: SocketService,
+                       private authService: AuthService,
+                       private deviceDetector: DeviceDetectorService) {
+        this.init();
     }
 
     public getRoomContent(id: string, offset?: number, limit?: number): Observable<Message[]> {
@@ -51,8 +46,22 @@ export class ChatService {
     public deleteFromBlacklist(id: string): Observable<any> {
         return this.http.request('delete', `${config.API_URL}/blacklist`, {
             body: {
-                blacklistedId: id,
+                blacklistedId: id
             }
         });
+    }
+
+    public getTheme(): Observable<string> {
+        return this.socketService.listen('colorChanged');
+    }
+
+    private init(): void {
+        const user = LocalStorageService.getUser() as IUser;
+        if (user && this.authService.isAuthenticated()) {
+            this.user = user;
+            this.socketService.connect();
+        } else {
+            this.authService.logOut();
+        }
     }
 }
