@@ -5,15 +5,15 @@
 .wrapper {
     display: flex;
     height: 100%;
-    width: 100%;
-    background: transparent;
     flex-direction: column;
+    align-items: center;
 
     .list-title {
         @include media-property(justify-content, space-between, space-between, flex-end);
         display: flex;
         align-items: center;
         padding: 0 20px;
+        width: calc(100% - 40px);
         user-select: none;
         font-family: 'Montserrat Alternates', sans-serif;
         height: 50px;
@@ -115,7 +115,7 @@
         transition: 0.3s;
         color: #000000;
         background: rgba(0, 0, 0, 0.38);
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.8);
     }
 
     .contact-list-item {

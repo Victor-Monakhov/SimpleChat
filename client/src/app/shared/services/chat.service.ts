@@ -12,7 +12,8 @@ import {Option} from "../models/Option";
 })
 export class ChatService {
     public isContactList: Subject<boolean> = new Subject<boolean>();
-    public flipCard: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public flipCard: Subject<boolean> = new Subject<boolean>();
+
     public currentRoomUsers: BehaviorSubject<object[]> = new BehaviorSubject<object[]>([]);
     public theme: BehaviorSubject<string> = new BehaviorSubject<string>('light');
     public device: object = {isDesktop: 1, isMobile: 0, isTablet: 0};

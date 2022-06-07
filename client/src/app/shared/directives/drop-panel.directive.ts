@@ -1,26 +1,23 @@
 import {
     Directive,
     ElementRef,
-    EventEmitter,
+    EventEmitter, HostListener,
     Input,
     OnChanges,
     Optional,
     Output,
     SimpleChanges,
     TemplateRef,
-    ViewContainerRef,
+    ViewContainerRef
 } from '@angular/core';
 import {IDropPanel} from '../interfaces/drop-panel.interface';
 import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 import {TemplatePortal} from '@angular/cdk/portal';
 import {merge, Observable} from 'rxjs';
+import {SubSink} from 'subsink';
 
 @Directive({
-    selector: '[dropPanel]',
-
-    host: {
-        '(click)': 'onDrop(true)'
-    }
+    selector: '[dropPanel]'
 })
 export class DropPanelDirective implements OnChanges {
 
@@ -28,17 +25,17 @@ export class DropPanelDirective implements OnChanges {
     @Input() public trigger: boolean = false;
     @Input() public staticBackdrop: boolean = true;
     @Output() public triggerEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+    private subs: SubSink = new SubSink();
     private isClick: boolean = false;
-    private closeHandler;
 
-    constructor (public overlay: Overlay,
+    public constructor(public overlay: Overlay,
                 public elementRef: ElementRef,
                 public viewContainerRef: ViewContainerRef,
                 @Optional() public overlayRef: OverlayRef) {
 
     }
 
-    ngOnChanges (changes: SimpleChanges) {
+    public ngOnChanges(changes: SimpleChanges): void {
         if (this.trigger) {
             this.onDrop(false);
         } else if (!this.isClick) {
@@ -46,17 +43,16 @@ export class DropPanelDirective implements OnChanges {
         }
     }
 
-    public onDrop(flag: boolean) {
+    private onDrop(flag: boolean): void {
         this.isClick = flag;
         this.openMenu();
         this.dropPanel.anim = true;
     }
 
-    private openMenu() {
+    private openMenu(): void {
         this.dropPanel.visible.next(true);
         this.overlayRef = this.overlay.create({
             hasBackdrop: true,
-            scrollStrategy: this.overlay.scrollStrategies.block(),
             positionStrategy: this.overlay
                 .position()
                 .flexibleConnectedTo(this.elementRef)
@@ -67,15 +63,18 @@ export class DropPanelDirective implements OnChanges {
                         overlayX: 'end',
                         overlayY: 'top'
                     }
-                ])
+                ]),
+            scrollStrategy: this.overlay.scrollStrategies.block()
         });
         const templatePortal = new TemplatePortal(
             this.dropPanel.templateRef as TemplateRef<any>,
             this.viewContainerRef
         );
         this.overlayRef.attach(templatePortal);
-        this.closeHandler = this.dropdownClosingActions().subscribe(
-            () => this.destroyMenu()
+        this.subs.add(
+            this.dropdownClosingActions().subscribe(
+                () => this.destroyMenu()
+            )
         );
     }
 
@@ -89,7 +88,7 @@ export class DropPanelDirective implements OnChanges {
         return merge(backdropClick$, detachment$, closeMenu$);
     }
 
-    private destroyMenu() {
+    private destroyMenu(): void {
         if (!this.overlayRef) {
             return;
         }
@@ -97,9 +96,14 @@ export class DropPanelDirective implements OnChanges {
         this.isClick = false;
         setTimeout(() => {
             this.triggerEvent.emit(false);
-            this.closeHandler.unsubscribe();
+            this.subs.unsubscribe();
             this.overlayRef.detach();
             this.dropPanel.visible.next(false);
         }, 500);
+    }
+
+    @HostListener('click')
+    private onClick(): void {
+        this.onDrop(true);
     }
 }

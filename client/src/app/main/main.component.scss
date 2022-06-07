@@ -3,112 +3,48 @@
 @import "colors.scss";
 @import "animations.scss";
 
-$contact-list-width: 300px;
-
-$screen-sm-min: 320px;
-$screen-md-min: 768px;
-$screen-lg-min: 992px;
-$screen-xl-min: 1200px;
-
-@mixin sm {
-    @media (min-width: #{$screen-sm-min}) {
-        @content;
-    }
-}
-
-@mixin md {
-    @media (min-width: #{$screen-md-min}) {
-        @content;
-    }
-}
-
-@mixin lg {
-    @media (min-width: #{$screen-lg-min}) {
-        @content;
-    }
-}
-
-@mixin xl {
-    @media (min-width: #{$screen-xl-min}) {
-        @content;
-    }
-}
-
 .wrapper {
     display: flex;
-    height: 92.4%;
-    background: #273038;
-}
+    height: calc(100% - #{$header-height});
+    background: $background-dark;
 
-app-chat {
-    flex-basis: 100%;
-    flex-shrink: 1;
-}
-
-app-contact-list {
-    width: 100%;
-}
-
-app-smiles {
-    width: 100%;
-}
-
-.sidenav-wrapper {
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-}
-
-.sidenav-content {
-    display: flex;
-    height: 100%;
-    width: 300px;
-    align-items: center;
-    justify-content: center;
-
-    ::ng-deep .mat-drawer-inner-container {
-        overflow: hidden;
+    app-chat {
+        flex-basis: 100%;
+        flex-shrink: 1;
     }
-}
 
-.flip-card {
-    @include media-property(display, none, none, block);
-    height: 100%;
-    background-color: #273038;
-    //perspective: 1000px;
-    width: $contact-list-width;
-    flex-shrink: 0;
-}
+    .flip-card {
+        @include media-property(display, none, none, block);
+        height: 100%;
+        flex-shrink: 0;
+        perspective: 2000px;
+    }
 
-/* This container is needed to position the front and back side */
-.flip-card-inner {
-    //position: relative;
-    border-left: 1px solid rgba(0, 0, 0, 0.2);
-    width: 100%;
-    height: 100%;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-}
+    .flip-card-inner {
+        position: relative;
+        border-left: 1px solid $blackA02;
+        width: $contact-list-width;
+        height: 100%;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
 
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
 
-/* Position the front and back side */
-.flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-}
+    .flip-card-front {
+        color: black;
+    }
 
-/* Style the front side (fallback if image is missing) */
-.flip-card-front {
-    transition: 0.3s;
-    color: black;
-}
-
-/* Style the back side */
-.flip-card-back {
-    color: white;
-    transform: rotateY(180deg);
+    .flip-card-back {
+        color: white;
+        transform: rotateY(180deg);
+    }
 }
 
 .light {

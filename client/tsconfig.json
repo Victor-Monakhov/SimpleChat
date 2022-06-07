@@ -20,7 +20,9 @@
             "dom"
         ]
     },
-    "include": ["src/**/*"],
+    "include": [
+        "src/**/*"
+    ],
     "angularCompilerOptions": {
         "fullTemplateTypeCheck": true,
         "strictInjectionParameters": true

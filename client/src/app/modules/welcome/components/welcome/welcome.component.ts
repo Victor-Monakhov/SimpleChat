@@ -10,10 +10,10 @@ export class WelcomeComponent implements OnInit {
 
     public host: string = CONFIG.SERVER_HOST;
 
-    constructor() {
+    public constructor() {
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
+        return;
     }
-
 }

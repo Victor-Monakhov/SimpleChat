@@ -8,7 +8,7 @@ import {WelcomeRoutingModule} from './welcome-routing.module';
     declarations: [WelcomeComponent],
     imports: [
         CommonModule,
-        WelcomeRoutingModule,
+        WelcomeRoutingModule
     ]
 })
 export class WelcomeModule {
