@@ -1,0 +1,169 @@
+@import "mixins.scss";
+@import "colors.scss";
+@import "variables.scss";
+@import "animations.scss";
+@import "classes/panel-hat.scss";
+@import "themes/light-theme.scss";
+@import "themes/dark-theme.scss";
+@import "scrollbar.scss";
+
+.settings-wrapper {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid;
+    transition: 0.3s;
+
+    .scrollbar {
+        overflow-y: auto;
+        margin: 20px 0;
+        width: $chat-settings-panel-width - $scroll-width;
+
+        .settings {
+            margin: 0 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            row-gap: 20px;
+
+            .theme-chooser {
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+
+                mat-icon {
+                    width: 2rem;
+                    height: 2rem;
+                    font-size: 2rem;
+                    user-select: none;
+                }
+            }
+
+            .add-room-btn {
+                padding: 5px 0;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                user-select: none;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+                height: auto;
+
+                span {
+                    font-weight: 300;
+                    font-size: 1.5rem;
+                }
+
+                mat-icon {
+                    font-size: 2rem;
+                    height: auto;
+                    width: auto;
+                }
+            }
+
+            input {
+                height: 2rem;
+                width: calc(100% - 40px);
+                border: none;
+                border-radius: 50px;
+                outline: none;
+                padding: 5px 20px;
+                font-size: 1.1rem;
+                transition: 0.3s;
+            }
+        }
+
+        .rooms {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 10px;
+
+            .room {
+                display: flex;
+                align-items: center;
+                column-gap: 20px;
+                cursor: pointer;
+                height: 3.5rem;
+
+                .unread {
+                    width: 30px;
+                    font-weight: 600;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-family: 'Quicksand', sans-serif;
+                    flex-shrink: 0;
+                    overflow: hidden;
+                }
+
+                .room-info {
+                    $room-side-margin: 20px;
+                    $unread-width: 30px;
+                    $column-gap: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    width: $contact-panel-width - $room-side-margin - $unread-width - $column-gap - $scroll-width;
+
+
+                    .room-title {
+                        font-family: 'Montserrat Alternates', sans-serif;
+                        font-weight: 400;
+                        font-size: 1.5rem;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+        }
+    }
+}
+
+:host-context(.light) {
+    .add-room-btn {
+        background: $blackA02;
+    }
+
+    input {
+        box-shadow: 0 0 10px $blackA05;
+        background: $whiteA05;
+
+        &:hover, &:focus {
+            background: $whiteA07;
+            box-shadow: 0 0 10px $black;
+        }
+    }
+
+    .unread {
+        color: $blue;
+    }
+}
+
+:host-context(.dark) {
+    .add-room-btn {
+        background: $blackA04;
+    }
+
+    input {
+        background: $whiteA05;
+
+        &:hover, &:focus {
+            background: $whiteA07;
+            box-shadow: 0 0 10px $white;
+        }
+    }
+
+    .room {
+        color: $whiteA07;
+
+        .unread {
+            color: $red;
+        }
+    }
+}
+

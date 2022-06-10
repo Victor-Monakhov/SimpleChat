@@ -5,5 +5,4 @@ export interface IDropPanel {
     templateRef: TemplateRef<any>;
     closed: EventEmitter<void>;
     visible: Subject<boolean>;
-    anim: boolean;
 }

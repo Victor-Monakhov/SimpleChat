@@ -1,29 +1,39 @@
 <app-header></app-header>
 <div class="wrapper">
-    <app-room-list class="side-menu"
-                   [rooms]="rooms | updateRooms"
-                   [unread]="unreadInRooms"
-                   (onSelectedRoom)="toggleRoom($event)"
-                   (onCreateRoom)="createRoom()"
-                   (closeList)="openSideNav()">
-    </app-room-list>
+    <app-chat-settings-panel class="chat-settings"
+                             (onCreateRoom)="createRoom()"
+                             (closeList)="openSideNav()">
+    </app-chat-settings-panel>
     <app-chat></app-chat>
     <div class="flip-card">
         <div class="flip-card-inner"
              [ngClass]="{'rotate' : isFlipped$ | async}">
-            <app-contact-list class="flip-card-front"></app-contact-list>
+            <app-contact-menu-panel class="flip-card-front"></app-contact-menu-panel>
             <app-smiles class="flip-card-back"></app-smiles>
         </div>
     </div>
 </div>
 
-<app-drop-panel #contactList
-                class="drop-contact-list"
-                [dropPanel]="contactList"
-                [trigger]="contactListTrigger$ | async"
-                (triggerEvent)="contactListTriggerHandler($event)">
-    <app-contact-list [class]="theme"></app-contact-list>
+<app-drop-panel #contactMenu
+                [dropPanel]="contactMenu"
+                [trigger]="contactMenuTrigger$ | async"
+                [animDaley]="500"
+                (triggerEvent)="contactMenuTriggerHandler($event)">
+    <app-contact-menu-panel
+        [ngClass]="['drop-contact-menu', theme, (contactMenuTrigger$ | async) ? 'visible' :'hidden']">
+    </app-contact-menu-panel>
 </app-drop-panel>
+
+<app-drop-panel #addRoom
+                [dropPanel]="addRoom"
+                [trigger]="addingRoomTrigger$ | async"
+                (triggerEvent)="addingRoomTriggerHandler($event)">
+    <app-dialog-adding-room
+        [ngClass]="['drop-adding-room', theme, (addingRoomTrigger$ | async) ? 'visible' :'hidden']">
+    </app-dialog-adding-room>
+</app-drop-panel>
+
+
 
 
 

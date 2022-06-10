@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {ChatService} from "../shared/services/chat.service";
+import {ApiService} from "../shared/services/api.service";
 
 @Component({
     selector: 'app-dialog-invitation',
@@ -12,7 +12,7 @@ export class DialogInvitationComponent implements OnInit {
 
     constructor(public dialogRef: MatDialogRef<DialogInvitationComponent>,
                 @Inject(MAT_DIALOG_DATA) public data,
-                private chatService: ChatService) {}
+                private chatService: ApiService) {}
 
     public ngOnInit(): void {
         this.chatService.theme.subscribe(selectedTheme => {

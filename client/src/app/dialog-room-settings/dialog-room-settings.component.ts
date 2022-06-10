@@ -3,7 +3,7 @@ import {LocalStorageService} from "../shared/services/local-storage.service";
 import {PerfectScrollbarConfigInterface} from "ngx-perfect-scrollbar";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {IRoom} from "../shared/models/IRoom";
-import {ChatService} from "../shared/services/chat.service";
+import {ApiService} from "../shared/services/api.service";
 
 @Component({
   selector: 'app-dialog-room-settings',
@@ -21,7 +21,7 @@ export class DialogRoomSettingsComponent implements OnInit {
 
     constructor(public dialogRef: MatDialogRef<DialogRoomSettingsComponent>,
                 @Inject(MAT_DIALOG_DATA) public room: IRoom,
-                private chatService: ChatService) {}
+                private chatService: ApiService) {}
 
     public ngOnInit(): void {
         this.chatService.theme.subscribe(selectedTheme => {

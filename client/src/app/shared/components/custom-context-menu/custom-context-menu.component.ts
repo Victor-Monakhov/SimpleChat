@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ChatService} from "../../services/chat.service";
+import {ApiService} from "../../services/api.service";
 import {Option} from "../../models/Option";
 
 @Component({
@@ -15,7 +15,7 @@ export class CustomContextMenuComponent implements OnInit {
     public isShown: boolean = false;
     private mouseLocation: {left: number, top: number} = {left: 0, top: 0};
 
-    constructor(private chatService: ChatService) {
+    constructor(private chatService: ApiService) {
     }
 
     public ngOnInit(): void {

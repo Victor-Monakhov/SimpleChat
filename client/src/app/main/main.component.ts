@@ -1,12 +1,12 @@
 import {Component, HostBinding, OnInit, ViewChild} from '@angular/core';
-import {ChatService} from '../shared/services/chat.service';
-import {AuthService} from '../shared/services/auth.service';
-import {SocketService} from '../shared/services/socket.service';
+import {ApiService} from '../shared/services/api.service';
 import {ContextMenuComponent} from '@syncfusion/ej2-angular-navigations';
 import {LocalStorageService} from '../shared/services/local-storage.service';
 import {Subject} from 'rxjs';
 import {THEMES} from '../shared/enums/theme.enum';
 import {SubSink} from 'subsink';
+import {IRoom} from '../shared/models/IRoom';
+import {PanelService} from '../shared/services/panel.service';
 
 @Component({
     selector: 'app-main',
@@ -18,28 +18,42 @@ export class MainComponent implements OnInit {
     @HostBinding('class') public theme: string = THEMES.DARK;
     private subs: SubSink = new SubSink();
 
-    public constructor(private chatService: ChatService) {
+    public constructor(private apiService: ApiService,
+                       private panelService: PanelService) {
     }
 
     public ngOnInit(): void {
-        this.subs.add(
-            this.chatService.getTheme().subscribe((theme) => this.theme = theme)
-        );
-        const aSub = this.chatService.getBlacklist().subscribe((blacklist) => {
+        this.themeListener();
+
+        const aSub = this.apiService.getBlacklist().subscribe((blacklist) => {
             LocalStorageService.setBlacklist(blacklist);
             aSub.unsubscribe();
         });
     }
 
-    public contactListTriggerHandler(trigger: boolean): void {
-        this.chatService.isContactList.next(trigger);
+    public contactMenuTriggerHandler(trigger: boolean): void {
+        this.panelService.isContactMenu$.next(trigger);
     }
 
-    public get contactListTrigger$(): Subject<boolean> {
-        return this.chatService.isContactList;
+    public addingRoomTriggerHandler(trigger: boolean): void {
+        this.panelService.isAddingRoom$.next(trigger);
+    }
+
+    private themeListener(): void {
+        this.subs.add(
+            this.apiService.getTheme().subscribe((theme) => this.theme = theme)
+        );
+    }
+
+    public get contactMenuTrigger$(): Subject<boolean> {
+        return this.panelService.isContactMenu$;
     }
 
     public get isFlipped$(): Subject<boolean> {
-        return this.chatService.flipCard;
+        return this.panelService.isContactMenuFlipped$;
+    }
+
+    public get addingRoomTrigger$(): Subject<boolean> {
+        return this.panelService.isAddingRoom$;
     }
 }

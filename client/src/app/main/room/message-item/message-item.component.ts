@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Message} from "../../../shared/models/Message";
 import {LocalStorageService} from "../../../shared/services/local-storage.service";
-import {ChatService} from "../../../shared/services/chat.service";
+import {ApiService} from "../../../shared/services/api.service";
 import {MenuEventArgs, MenuItemModel} from "@syncfusion/ej2-navigations";
 import {ContextMenuComponent} from "@syncfusion/ej2-angular-navigations";
 import {Browser} from "@syncfusion/ej2-base";
@@ -20,7 +20,7 @@ export class MessageItemComponent implements OnInit {
     public theme: string = 'dark';
 
 
-    constructor(private chatService: ChatService) {}
+    constructor(private chatService: ApiService) {}
 
     public ngOnInit(): void {
         this.chatService.theme.subscribe(selectedTheme => this.theme = selectedTheme);

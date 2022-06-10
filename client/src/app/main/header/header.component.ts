@@ -1,9 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../shared/services/auth.service';
 import {Router} from '@angular/router';
 import {SocketService} from '../../shared/services/socket.service';
-import {ChatService} from '../../shared/services/chat.service';
+import {ApiService} from '../../shared/services/api.service';
 import {IUser} from '../../shared/models/IUser';
+import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-header',
@@ -17,11 +18,11 @@ export class HeaderComponent implements OnInit {
     public constructor(private authService: AuthService,
                        private router: Router,
                        private socketService: SocketService,
-                       private chatService: ChatService) {
+                       private userService: UserService) {
     }
 
     public ngOnInit(): void {
-        this.user = this.chatService.user;
+        this.user = this.userService.user;
         if (!this.user) {
             this.logOut();
         }

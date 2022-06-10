@@ -15,7 +15,7 @@ import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
 import {MainComponent} from './main/main.component';
 import {HeaderComponent} from './main/header/header.component';
 import {ChatComponent} from './main/chat/chat.component';
-import {ContactListComponent} from './main/contact-list/contact-list.component';
+import {ContactMenuPanelComponent} from './main/contact-list/contact-menu-panel.component';
 import {RoomComponent} from './main/room/room.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {SmilesComponent} from './main/smiles/smiles.component';
@@ -32,9 +32,9 @@ import {MatIconModule} from "@angular/material/icon";
 import {EmojifyModule} from "angular-emojify";
 import {MatRippleModule} from "@angular/material/core";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import {RoomListComponent} from './main/room-list/room-list.component';
+import {ChatSettingsPanelComponent} from './main/room-list/chat-settings-panel.component';
 import {DialogInvitingRoomComponent} from './dialog-inviting-room/dialog-inviting-room.component';
-import {SearchPipe} from './shared/pipes/search.pipe';
+import {SearchRoomsPipe} from './shared/pipes/search-rooms.pipe';
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {DialogRoomSettingsComponent} from './dialog-room-settings/dialog-room-settings.component';
@@ -46,7 +46,7 @@ import {MessageItemComponent} from './main/room/message-item/message-item.compon
 import {NguiParallaxScrollModule} from "@ngui/parallax-scroll";
 import {InViewportModule} from "@thisissoon/angular-inviewport";
 import {MatSidenavModule} from "@angular/material/sidenav";
-import { UpdateRoomsPipe } from './shared/pipes/update-rooms.pipe';
+import { SortRoomsByActionPipe } from './shared/pipes/sort-rooms-by-action.pipe';
 import {DeviceDetectorModule} from "ngx-device-detector";
 import {MAT_BOTTOM_SHEET_DEFAULT_OPTIONS, MatBottomSheetModule} from "@angular/material/bottom-sheet";
 import {MatMenuModule} from "@angular/material/menu";
@@ -67,19 +67,19 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MainComponent,
         HeaderComponent,
         ChatComponent,
-        ContactListComponent,
+        ContactMenuPanelComponent,
         RoomComponent,
         SmilesComponent,
         AuthComponent,
         SetReferenceDirective,
         DialogAddingRoomComponent,
         DialogInvitationComponent,
-        RoomListComponent,
+        ChatSettingsPanelComponent,
         DialogInvitingRoomComponent,
-        SearchPipe,
+        SearchRoomsPipe,
         DialogRoomSettingsComponent,
         MessageItemComponent,
-        UpdateRoomsPipe,
+        SortRoomsByActionPipe,
         MobileSmileComponent,
         CustomContextMenuComponent,
         ContextMenuDirective,

@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {IRoom} from '../../shared/models/IRoom';
-import {ChatService} from '../../shared/services/chat.service';
+import {ApiService} from '../../shared/services/api.service';
 import {SocketService} from '../../shared/services/socket.service';
 import {AuthService} from '../../shared/services/auth.service';
 import {MatDialog} from '@angular/material/dialog';
@@ -31,13 +31,11 @@ export class ChatComponent implements OnInit {
     public opened: boolean = false;
 
     public newMessage: object = {};
-    public me: string;
-
-    public theme: string = 'dark';
+    // public me: string;
     public listOfRooms: IRoom[] = [];
     public overallUnreadMessages: number = 0;
 
-    public constructor(public chatService: ChatService,
+    public constructor(public chatService: ApiService,
                        private socketService: SocketService,
                        private authService: AuthService,
                        public dialog: MatDialog,
@@ -45,19 +43,17 @@ export class ChatComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (this.authService.isAuthenticated()) {
-            this.chatService.theme.subscribe(selectedTheme => this.theme = selectedTheme);
-            this.me = LocalStorageService.getUser()['id'];
+            // this.me = LocalStorageService.getUser()['id'];
 
             // -----------------------------------------------------------------------------------------------------------
             this.subs.add(
-                this.socketService.listen('join').subscribe((data) => {
-                    (data as IEntryData).rooms.forEach((room) => {
+                this.chatService.getEntryData().subscribe((data) => {
+                    data.rooms.forEach((room) => {
                         this.unreadInRooms[room._id] = 0;
                         room.lastAction = new Date(room.lastAction);
                         this.rooms.push(room);
                     });
-                    this.listOfRooms = this.rooms;
+                    // this.listOfRooms = this.rooms;
                     this.currentRoom = this.rooms.find(
                         (room) => room._id === LocalStorageService.getlastRoomId()) || this.rooms[0];
                 })
@@ -109,7 +105,6 @@ export class ChatComponent implements OnInit {
             //         return room;
             //     });
             // })
-        }
     }
 
     public recountUnread(): void {
@@ -129,19 +124,19 @@ export class ChatComponent implements OnInit {
         this.opened = !this.opened;
     }
 
-    public createRoom(): void {
-        const dialogRef = this.dialog.open(DialogAddingRoomComponent, {
-            width: '500px',
-            height: '650px',
-            hasBackdrop: true
-        });
-        const aSub = dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.socketService.emit('createRoom', result);
-            }
-            aSub.unsubscribe();
-        });
-    }
+    // public createRoom(): void {
+    //     const dialogRef = this.dialog.open(DialogAddingRoomComponent, {
+    //         width: '500px',
+    //         height: '650px',
+    //         hasBackdrop: true
+    //     });
+    //     const aSub = dialogRef.afterClosed().subscribe(result => {
+    //         if (result) {
+    //             this.socketService.emit('createRoom', result);
+    //         }
+    //         aSub.unsubscribe();
+    //     });
+    // }
 
     private openInvitation(data: any): void {
         const invitationDialogRef = this.dialog.open(DialogInvitationComponent, {
@@ -172,9 +167,7 @@ export class ChatComponent implements OnInit {
         this.cdr.detectChanges();
     }
 
-    public toggleRoom(id: string): void {
-        this.rooms.forEach(room => id === room._id ? this.currentRoom = room : false);
-    }
+
 }
 
 

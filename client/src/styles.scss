@@ -9,7 +9,19 @@ html, body {
     height: 100%;
     overflow: hidden !important;
 }
-body { margin: 0; font-family: Roboto, "Noto Color Emoji" ,"Helvetica Neue", sans-serif; }
+body {
+    margin: 0;
+    font-family: Roboto,
+    "Noto Color Emoji",
+    "Helvetica Neue",
+    sans-serif;
+}
+
+hr {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid;
+}
 
 .mat-menu-panel {
     background: #e6e7f2;

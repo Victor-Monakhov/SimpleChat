@@ -4,8 +4,8 @@
         <div class="flip-card">
             <div class="flip-card-inner" #cardInner>
                 <div class="flip-card-front">
-                    <app-contact-list [isDisplayed]="isFlipped"
-                                      (closeParticipants)="showSideNav()"></app-contact-list>
+                    <app-contact-menu-panel [isDisplayed]="isFlipped"
+                                      (closeParticipants)="showSideNav()"></app-contact-menu-panel>
                 </div>
                 <div class="flip-card-back">
                     <app-smiles (closeParticipants)="showSideNav()"></app-smiles>
@@ -21,8 +21,8 @@
                         position="end"
                         [(opened)]="opened"
                         [mode]="chatService.device['isDesktop'] ? 'side' : 'over'">
-                <app-contact-list [isDisplayed]="isFlipped"
-                                  (closeParticipants)="showSideNav()"></app-contact-list>
+                <app-contact-menu-panel [isDisplayed]="isFlipped"
+                                  (closeParticipants)="showSideNav()"></app-contact-menu-panel>
             </mat-drawer>
         </mat-drawer-container>
     </ng-template>

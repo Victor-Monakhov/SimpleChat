@@ -12,7 +12,7 @@
     padding: 10px;
 
     .description {
-        @include media-property(width, auto, auto, 400px);
+        @include media-property(H, width, auto, auto, 400px);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -28,7 +28,7 @@
     }
 
     h1 {
-        @include media-property(font-size, 42px, 42px, 62px);
+        @include media-property(H, font-size, 42px, 42px, 62px);
         margin: 0;
         font-family: 'Quicksand', sans-serif;
         font-weight: 300;
@@ -37,8 +37,8 @@
     }
 
     .login-wrapper {
-        @include media-property(flex-direction, column, column, row);
-        @include media-property(width, auto, auto, 450px);
+        @include media-property(H, flex-direction, column, column, row);
+        @include media-property(H, width, auto, auto, 450px);
         display: flex;
         height: 120px;
         margin-top: 30px;

@@ -1,5 +1,5 @@
 import {Directive, HostListener, Input} from '@angular/core';
-import {ChatService} from '../services/chat.service';
+import {ApiService} from '../services/api.service';
 
 @Directive({
     selector: '[context-menu]',
@@ -8,7 +8,7 @@ export class ContextMenuDirective {
     @Input('context-menu') options;
     @Input() isMyMessage: boolean = true;
 
-    constructor(private chatService: ChatService) {
+    constructor(private chatService: ApiService) {
     }
 
     @HostListener('contextmenu', ['$event']) public rightClicked(event: MouseEvent): void {

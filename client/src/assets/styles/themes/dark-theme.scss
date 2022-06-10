@@ -1,0 +1,34 @@
+@import "src/assets/styles/colors";
+
+:host-context(.dark){
+    hr{
+        border-color: $whiteA03;
+    }
+
+    .panel-hat{
+        background: $blackA05;
+        box-shadow: 0 5px 20px -10px $whiteA05;
+    }
+
+    .settings-wrapper, .contacts-wrapper {
+        background-color: $background-dark;
+        border-color: $whiteA05;
+        color: $white;
+    }
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: $light-orange;
+    }
+
+    ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+        background-color: $orange;
+    }
+    .contacts-wrapper:hover, .settings-wrapper:hover, .add-room-wrapper:hover{
+        ::-webkit-scrollbar-track{
+            background: $blackA05;
+        }
+        ::-webkit-scrollbar-thumb{
+            background: $whiteA07;
+        }
+    }
+}

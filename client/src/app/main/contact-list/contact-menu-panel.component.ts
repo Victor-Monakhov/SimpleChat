@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
 import {SocketService} from '../../shared/services/socket.service';
-import {ChatService} from '../../shared/services/chat.service';
+import {ApiService} from '../../shared/services/api.service';
 import {AuthService} from '../../shared/services/auth.service';
 import {MenuEventArgs, MenuItemModel} from '@syncfusion/ej2-navigations';
 import {Browser} from '@syncfusion/ej2-base';
@@ -15,14 +15,15 @@ import {LocalStorageService} from '../../shared/services/local-storage.service';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {WIN_SIZES} from '../../app.config';
 import {SubSink} from 'subsink';
+import {PanelService} from '../../shared/services/panel.service';
 
 
 @Component({
-    selector: 'app-contact-list',
-    templateUrl: './contact-list.component.html',
-    styleUrls: ['./contact-list.component.scss']
+    selector: 'app-contact-menu-panel',
+    templateUrl: './contact-menu-panel.component.html',
+    styleUrls: ['./contact-menu-panel.component.scss']
 })
-export class ContactListComponent implements OnInit, OnDestroy {
+export class ContactMenuPanelComponent implements OnInit, OnDestroy {
     @ViewChild('contextmenu') public contextmenu: ContextMenuComponent;
     private subs: SubSink = new SubSink();
     private me: string = LocalStorageService.getUser()['id'];
@@ -48,7 +49,8 @@ export class ContactListComponent implements OnInit, OnDestroy {
         }];
 
     public constructor(private socketService: SocketService,
-                private chatService: ChatService,
+                private apiService: ApiService,
+                private panelService: PanelService,
                 private authService: AuthService,
                 private breakpointObserver: BreakpointObserver) {
         this.subs.add(
@@ -63,7 +65,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         if (this.authService.isAuthenticated()) {
             this.blacklist = LocalStorageService.getBlacklist();
-            this.chatService.currentRoomUsers.subscribe(users => {
+            this.apiService.currentRoomUsers.subscribe(users => {
                 this.list = users;
             });
         }
@@ -74,7 +76,7 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     public onClose() {
-        this.chatService.isContactList.next(false);
+        this.panelService.isContactMenu$.next(false);
     }
 
     public addDisabled(args: MenuEventArgs) {
@@ -108,14 +110,14 @@ export class ContactListComponent implements OnInit, OnDestroy {
     }
 
     public addToBlacklist(): void {
-        this.chatService.addToBlacklist(this.lastSelectedContactId).subscribe(response => {
+        this.apiService.addToBlacklist(this.lastSelectedContactId).subscribe(response => {
             LocalStorageService.setBlacklist(response);
             this.blacklist = response;
         });
     }
 
     public deleteFromBlacklist(): void {
-        this.chatService.deleteFromBlacklist(this.lastSelectedContactId).subscribe(response => {
+        this.apiService.deleteFromBlacklist(this.lastSelectedContactId).subscribe(response => {
             LocalStorageService.setBlacklist(response);
             this.blacklist = response;
         });

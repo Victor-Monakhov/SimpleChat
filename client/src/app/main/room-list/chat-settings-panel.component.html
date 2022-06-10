@@ -1,0 +1,65 @@
+<div class="settings-wrapper">
+    <div class="panel-hat">
+        <p>Main menu</p>
+        <mat-icon class="close-panel" (click)="closeList.emit()">
+            vertical_split
+        </mat-icon>
+    </div>
+    <div class="scrollbar">
+        <div class="settings">
+            <div class="theme-chooser">
+                <mat-icon class="theme-icon">wb_sunny</mat-icon>
+                <mat-slide-toggle
+                    [checked]="isCheckedTheme"
+                    (change)="toggleTheme()"
+                >
+                </mat-slide-toggle>
+                <mat-icon class="theme-icon">brightness_3</mat-icon>
+            </div>
+            <div class="add-room-btn" (click)="createRoom()">
+                <mat-icon>add</mat-icon>
+                <span>Create new room</span>
+            </div>
+            <input placeholder="Search room..."
+                   [(ngModel)]="searchMessage"
+                   *ngIf="!isSearchRoomList">
+            <input placeholder="Search room..."
+                   [(ngModel)]="searchMessage"
+                   (input)="searchRooms()"
+                   *ngIf="isSearchRoomList">
+            <mat-slide-toggle class="searchToggle"
+                              (change)="toggleSearch()">
+                {{isSearchRoomList ? 'Globally' : 'Locally'}}
+            </mat-slide-toggle>
+        </div>
+        <div class="rooms">
+            <div *ngIf="!isSearchRoomList">
+                <div *ngFor="let room of rooms | searchRooms: searchMessage">
+                    <div class="room" (click)="onRoom(room)">
+                        <div class="unread">
+                            <span>{{unread[room._id] > 0 ? unread[room._id] : "0"}}</span>
+                        </div>
+                        <div class="room-info">
+                            <span class="room-title">{{room.title}}</span>
+                            <small *ngIf="room._id !== 'common'">
+                                Last action: {{room.lastAction | date: 'HH:mm:ss - dd.MM.yy'}}
+                            </small>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="isSearchRoomList">
+                <div *ngFor="let room of searchedRooms">
+                    <div class="room">
+                        <div class="unread"></div>
+                        <div class="room-info">
+                            <span class="room-title">{{room.title}}</span>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

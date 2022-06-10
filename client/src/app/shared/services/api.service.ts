@@ -4,20 +4,21 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {config} from '../config';
 import {Message} from '../models/Message';
 import {SocketService} from './socket.service';
-import {DeviceDetectorService} from 'ngx-device-detector';
 import {Option} from '../models/Option';
 import {LocalStorageService} from './local-storage.service';
 import {IUser} from '../models/IUser';
 import {AuthService} from './auth.service';
+import {IEntryData} from '../models/IEntryData.interface';
+import {API_INPUT_EVENT, API_OUTPUT_EVENT} from '../enums/api-event.enum';
+import {IRoom} from '../models/IRoom';
+import {THEMES} from '../enums/theme.enum';
 
 @Injectable({
     providedIn: 'root'
 })
-export class ChatService {
-    public isContactList: Subject<boolean> = new Subject<boolean>();
-    public flipCard: Subject<boolean> = new Subject<boolean>();
-    public theme: Subject<string> = new Subject<string>();
-    public user?: IUser;
+export class ApiService {
+
+     public theme: Subject<string> = new Subject<string>(); // temp
 
     public currentRoomUsers: BehaviorSubject<object[]> = new BehaviorSubject<object[]>([]);
     public device: object = {isDesktop: 1, isMobile: 0, isTablet: 0};
@@ -26,9 +27,7 @@ export class ChatService {
 
     public constructor(private http: HttpClient,
                        private socketService: SocketService,
-                       private authService: AuthService,
-                       private deviceDetector: DeviceDetectorService) {
-        this.init();
+                       private authService: AuthService) {
     }
 
     public getRoomContent(id: string, offset?: number, limit?: number): Observable<Message[]> {
@@ -52,16 +51,22 @@ export class ChatService {
     }
 
     public getTheme(): Observable<string> {
-        return this.socketService.listen('colorChanged');
+        return this.socketService.listen(API_INPUT_EVENT.CHANGE_THEME);
     }
 
-    private init(): void {
-        const user = LocalStorageService.getUser() as IUser;
-        if (user && this.authService.isAuthenticated()) {
-            this.user = user;
-            this.socketService.connect();
-        } else {
-            this.authService.logOut();
-        }
+    public setTheme(theme: string): void {
+        this.socketService.emit(API_OUTPUT_EVENT.CHANGE_THEME, {theme: theme});
+    }
+
+    public getEntryData(): Observable<IEntryData> {
+        return this.socketService.listen(API_INPUT_EVENT.ENTRY);
+    }
+
+    public getRoomsSearchingResult(): Observable<IRoom[]> {
+        return this.socketService.listen(API_INPUT_EVENT.SEARCH_ROOMS);
+    }
+
+    public setRoomsSearching(text: string): void {
+        this.socketService.emit(API_OUTPUT_EVENT.SEARCH_ROOMS, text);
     }
 }

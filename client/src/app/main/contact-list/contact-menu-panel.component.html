@@ -1,0 +1,158 @@
+<div class="contacts-wrapper">
+    <div class="panel-hat">
+        <mat-icon class="close-panel" (click)="onClose()">
+            arrow_forward_ios
+        </mat-icon>
+        <p>Participants</p>
+    </div>
+    <div class="scrollbar">
+        <div class="contact-list" id="context_menu">
+            <div *ngFor="let item of list">
+                <div class="contact"
+                     (contextmenu)="onContactRightClick(item)">
+                    <mat-icon *ngIf="item.online">brightness_1</mat-icon>
+                    <div class="avatar">
+                        <img [src]="item['avatar']" alt="">
+                    </div>
+                    <div class="contact-info">
+                        <span class="contact-name">{{item.name}}</span>
+                        <small class="creator" *ngIf="item['creator']">Creator</small>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <ejs-contextmenu
+                #contextmenu
+                target='#context_menu'
+                [items]='menuItems'
+                (select)="onSelect($event)"
+                (beforeItemRender)="addDisabled($event)"
+                (created)='onCreated()'>
+            </ejs-contextmenu>
+
+            <!-- __________________________________________________________________________________________________________-->
+
+            <div *ngFor="let item of list">
+                <div class="contact"
+                     (contextmenu)="onContactRightClick(item)">
+                    <mat-icon *ngIf="item.online">brightness_1</mat-icon>
+                    <div class="avatar">
+                        <img [src]="item['avatar']" alt="">
+                    </div>
+                    <div class="contact-info">
+                        <span class="contact-name">{{item.name}}</span>
+                        <small class="creator" *ngIf="item['creator']">Creator</small>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <ejs-contextmenu
+                #contextmenu
+                target='#context_menu'
+                [items]='menuItems'
+                (select)="onSelect($event)"
+                (beforeItemRender)="addDisabled($event)"
+                (created)='onCreated()'>
+            </ejs-contextmenu>
+
+
+            <div *ngFor="let item of list">
+                <div class="contact"
+                     (contextmenu)="onContactRightClick(item)">
+                    <mat-icon *ngIf="item.online">brightness_1</mat-icon>
+                    <div class="avatar">
+                        <img [src]="item['avatar']" alt="">
+                    </div>
+                    <div class="contact-info">
+                        <span class="contact-name">{{item.name}}</span>
+                        <small class="creator" *ngIf="item['creator']">Creator</small>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <ejs-contextmenu
+                #contextmenu
+                target='#context_menu'
+                [items]='menuItems'
+                (select)="onSelect($event)"
+                (beforeItemRender)="addDisabled($event)"
+                (created)='onCreated()'>
+            </ejs-contextmenu>
+
+
+            <div *ngFor="let item of list">
+                <div class="contact"
+                     (contextmenu)="onContactRightClick(item)">
+                    <mat-icon *ngIf="item.online">brightness_1</mat-icon>
+                    <div class="avatar">
+                        <img [src]="item['avatar']" alt="">
+                    </div>
+                    <div class="contact-info">
+                        <span class="contact-name">{{item.name}}</span>
+                        <small class="creator" *ngIf="item['creator']">Creator</small>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <ejs-contextmenu
+                #contextmenu
+                target='#context_menu'
+                [items]='menuItems'
+                (select)="onSelect($event)"
+                (beforeItemRender)="addDisabled($event)"
+                (created)='onCreated()'>
+            </ejs-contextmenu>
+
+
+            <div *ngFor="let item of list">
+                <div class="contact"
+                     (contextmenu)="onContactRightClick(item)">
+                    <mat-icon *ngIf="item.online">brightness_1</mat-icon>
+                    <div class="avatar">
+                        <img [src]="item['avatar']" alt="">
+                    </div>
+                    <div class="contact-info">
+                        <span class="contact-name">{{item.name}}</span>
+                        <small class="creator" *ngIf="item['creator']">Creator</small>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <ejs-contextmenu
+                #contextmenu
+                target='#context_menu'
+                [items]='menuItems'
+                (select)="onSelect($event)"
+                (beforeItemRender)="addDisabled($event)"
+                (created)='onCreated()'>
+            </ejs-contextmenu>
+
+
+            <div *ngFor="let item of list">
+                <div class="contact"
+                     (contextmenu)="onContactRightClick(item)">
+                    <mat-icon *ngIf="item.online">brightness_1</mat-icon>
+                    <div class="avatar">
+                        <img [src]="item['avatar']" alt="">
+                    </div>
+                    <div class="contact-info">
+                        <span class="contact-name">{{item.name}}</span>
+                        <small class="creator" *ngIf="item['creator']">Creator</small>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <ejs-contextmenu
+                #contextmenu
+                target='#context_menu'
+                [items]='menuItems'
+                (select)="onSelect($event)"
+                (beforeItemRender)="addDisabled($event)"
+                (created)='onCreated()'>
+            </ejs-contextmenu>
+
+            <!-- __________________________________________________________________________________________________________-->
+        </div>
+    </div>
+</div>
+

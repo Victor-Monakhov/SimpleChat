@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
 import {SMILES} from "../../shared/data";
-import {ChatService} from "../../shared/services/chat.service";
+import {ApiService} from "../../shared/services/api.service";
 import {PerfectScrollbarConfigInterface} from "ngx-perfect-scrollbar";
 
 @Component({
@@ -15,7 +15,7 @@ export class MobileSmileComponent implements OnInit {
     public theme: string = 'dark';
 
     constructor(private _bottomSheetRef: MatBottomSheetRef<MobileSmileComponent>,
-                private chatService: ChatService) {}
+                private chatService: ApiService) {}
 
     ngOnInit() {
         this.chatService.theme.subscribe(selectedTheme => this.theme = selectedTheme);

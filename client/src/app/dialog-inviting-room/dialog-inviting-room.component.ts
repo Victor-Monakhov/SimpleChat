@@ -3,7 +3,7 @@ import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PerfectScrollbarConfigInterface} from "ngx-perfect-scrollbar";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {SocketService} from "../shared/services/socket.service";
-import {ChatService} from "../shared/services/chat.service";
+import {ApiService} from "../shared/services/api.service";
 
 @Component({
     selector: 'app-dialog-inviting-room',
@@ -22,7 +22,7 @@ export class DialogInvitingRoomComponent implements OnInit {
                 private fb: FormBuilder,
                 private socketService: SocketService,
                 @Inject(MAT_DIALOG_DATA) public data,
-                private chatService: ChatService) {}
+                private chatService: ApiService) {}
 
     public ngOnInit(): void {
         this.chatService.theme.subscribe(selectedTheme => this.theme = selectedTheme);

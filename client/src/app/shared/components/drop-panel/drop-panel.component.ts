@@ -11,7 +11,6 @@ export class DropPanelComponent implements OnInit, IDropPanel {
     @ViewChild(TemplateRef) public templateRef: TemplateRef<any> = {} as TemplateRef<any>;
     public closed: EventEmitter<void> = new EventEmitter<void>();
     public visible: Subject<boolean> = new Subject<boolean>();
-    public anim: boolean = false;
 
     public constructor() {
     }

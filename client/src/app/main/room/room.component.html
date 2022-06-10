@@ -1,7 +1,8 @@
 <div class="room-wrapper" [ngClass]="{'dark': theme === 'dark', 'light': theme === 'light'}">
     <div class="chat-menu">
         <ng-container *ngIf="(currentRoom._id !== 'common'); else ifCommon">
-            <ng-container *ngIf="!currentRoom.isFavorites; else ifCommon">
+<!--            <ng-container *ngIf="!currentRoom.isFavorites; else ifCommon">-->
+            <ng-container >
                 <div class="room-info">
                     <button mat-button (click)="openList.emit()">
                         <mat-icon [matBadge]="overallUnreadMessages.toString()"
@@ -11,7 +12,7 @@
                         </mat-icon>
                     </button>
                     <div class="room-title">
-                        <mat-icon *ngIf="chatService.device['isDesktop']">meeting_room</mat-icon>
+                        <mat-icon *ngIf="apiService.device['isDesktop']">meeting_room</mat-icon>
                         <div class="room-title-text">
                             {{currentRoom.title}}
                             <small>{{currentRoom.users.length}} participants</small>
@@ -21,7 +22,7 @@
                         </button>
                     </div>
                 </div>
-                <ng-container *ngIf="chatService.device['isDesktop']; else mobileMenu">
+                <ng-container *ngIf="apiService.device['isDesktop']; else mobileMenu">
                     <mat-list class="menu-items">
                         <mat-list-item matRipple (click)="inviteUsers()">
                             <mat-icon>person_add</mat-icon>
@@ -123,17 +124,17 @@
                      (keydown.enter)="sendMessage($event)">
                 </div>
             </perfect-scrollbar>
-            <ng-container *ngIf="chatService.device['isMobile']">
+            <ng-container *ngIf="apiService.device['isMobile']">
                 <span class="send-mobile" matRipple (click)="sendMessage($event)">
                     <img src="../../../assets/imgs/373675-200.png" alt="">
                 </span>
             </ng-container>
-            <ng-container *ngIf="chatService.device['isMobile']">
+            <ng-container *ngIf="apiService.device['isMobile']">
                 <span class="right-corner"></span>
             </ng-container>
         </div>
 
-        <ng-container *ngIf="chatService.device['isDesktop']">
+        <ng-container *ngIf="apiService.device['isDesktop']">
             <div class="wrap-btn">
                 <div class="send-btn" (click)="sendMessage($event)">
                     <img class="send-img" src="../../../assets/imgs/373675-200.png" alt="">
@@ -141,7 +142,7 @@
             </div>
         </ng-container>
 
-        <div class="wrap-btn" (click)="chatService.device['isDesktop'] ? openSmiles() : openSmilesList()">
+        <div class="wrap-btn" (click)="apiService.device['isDesktop'] ? openSmiles() : openSmilesList()">
             <div class="smile-btn">
                 <img class="smile-img" src="../../../assets/imgs/smile.png" alt="" #smileImg>
             </div>

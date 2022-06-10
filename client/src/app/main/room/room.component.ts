@@ -9,7 +9,7 @@ import {
     ViewChild
 } from '@angular/core';
 import {IRoom} from '../../shared/models/IRoom';
-import {ChatService} from '../../shared/services/chat.service';
+import {ApiService} from '../../shared/services/api.service';
 import {Message} from '../../shared/models/Message';
 import {
     PerfectScrollbarComponent,
@@ -32,6 +32,7 @@ import {ContextMenuComponent} from '@syncfusion/ej2-angular-navigations';
 import {iterativeBS} from '../../shared/utils/binarySearch';
 import {Subscription} from 'rxjs';
 import {Option} from '../../shared/models/Option';
+import {PanelService} from '../../shared/services/panel.service';
 
 @Component({
     selector: 'app-room',
@@ -101,20 +102,21 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
     ];
 
 
-    constructor(public chatService: ChatService,
-                public dialog: MatDialog,
-                private socketService: SocketService,
-                private bottomSheet: MatBottomSheet) {
+    public constructor(public apiService: ApiService,
+                       public panelService: PanelService,
+                       public dialog: MatDialog,
+                       private socketService: SocketService,
+                       private bottomSheet: MatBottomSheet) {
     }
 
     public ngOnInit(): void {
         this.me = LocalStorageService.getUser()['id'];
         this.loadMessage.read.push(this.me);
         this.aSub.add(
-            this.chatService.emitOption.subscribe(optionId => this.onSelectOption(optionId))
+            this.apiService.emitOption.subscribe(optionId => this.onSelectOption(optionId))
         );
         this.aSub.add(
-            this.chatService.theme.subscribe(selectedTheme => this.theme = selectedTheme)
+            this.apiService.theme.subscribe(selectedTheme => this.theme = selectedTheme)
         );
         this.updateRoom();
         this.socketListeners();
@@ -151,8 +153,8 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
         this.aSub.unsubscribe();
     }
 
-    public onContactList() {
-        this.chatService.isContactList.next(true);
+    public onContactList(): void {
+        this.panelService.isContactMenu$.next(true);
     }
 
     public socketListeners(): void {
@@ -304,20 +306,20 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
         this.updateList();
 
         this.aSub.add(
-            this.chatService.flipCard.subscribe(flag => this.isLoadedTemplate && flag ? this.animateSmile() : false)
+            this.panelService.isContactMenuFlipped$.subscribe(flag => this.isLoadedTemplate && flag ? this.animateSmile() : false)
         );
 
         if (this.currentRoom._id !== 'common') {
             this.messageRequest();
         }
     }
+
     private updateList(): void {
-        this.chatService.currentRoomUsers.next(Object.values(this.users));
+        this.apiService.currentRoomUsers.next(Object.values(this.users));
     }
 
 
     // -----------------------------------------------------------------------------------------------------------
-
 
 
     public onViewportChange(event: any): void {
@@ -345,7 +347,7 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
     public messageRequest(scroll?: boolean): void {
         const [mesOff, mesLim] = [this.messages.length, this.messages.length < 50 ? 50 : 20];
         this.aSub.add(
-            this.chatService.getRoomContent(this.currentRoom._id, mesOff, mesLim).subscribe(
+            this.apiService.getRoomContent(this.currentRoom._id, mesOff, mesLim).subscribe(
                 messages => {
                     this.messages = this.messages.filter(message => message.room !== '');
                     this.messages = [...messages, ...this.messages];
@@ -381,8 +383,8 @@ export class RoomComponent implements OnInit, AfterViewInit, OnChanges, OnDestro
     }
 
     public openSmiles(): void {
-        this.isFlipCard = !this.isFlipCard
-        this.chatService.flipCard.next(this.isFlipCard);
+        this.isFlipCard = !this.isFlipCard;
+        this.panelService.isContactMenuFlipped$.next(this.isFlipCard);
     }
 
     public inviteUsers(): void {

@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MatDialogRef} from "@angular/material/dialog";
-import {PerfectScrollbarConfigInterface} from "ngx-perfect-scrollbar";
-import {SocketService} from "../shared/services/socket.service";
-import {LocalStorageService} from "../shared/services/local-storage.service";
-import {ChatService} from "../shared/services/chat.service";
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatDialogRef} from '@angular/material/dialog';
+import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
+import {SocketService} from '../shared/services/socket.service';
+import {LocalStorageService} from '../shared/services/local-storage.service';
+import {ApiService} from '../shared/services/api.service';
 
 @Component({
     selector: 'app-dialog-adding-room',
@@ -18,16 +18,15 @@ export class DialogAddingRoomComponent implements OnInit {
     public searchedUsers: any;
     public userIds: any[] = [false];
     public isPublic = true;
-    public config: PerfectScrollbarConfigInterface = { wheelSpeed: 0.2, scrollingThreshold: 0};
+    public config: PerfectScrollbarConfigInterface = {wheelSpeed: 0.2, scrollingThreshold: 0};
     public theme: string = 'dark';
 
-    constructor(public dialogRef: MatDialogRef<DialogAddingRoomComponent>,
-                private fb: FormBuilder,
+    public constructor(private fb: FormBuilder,
                 private socketService: SocketService,
-                private chatService: ChatService) {}
+                private chatService: ApiService) {}
 
     public ngOnInit(): void {
-        this.chatService.theme.subscribe(selectedTheme => {
+        this.chatService.theme.subscribe((selectedTheme) => {
             this.theme = selectedTheme;
         });
         this.addRoomForm = this.fb.group({
@@ -39,11 +38,11 @@ export class DialogAddingRoomComponent implements OnInit {
         });
         this.onSearch();
 
-        this.socketService.listen('searchResult').subscribe(users => {
+        this.socketService.listen('searchResult').subscribe((users) => {
             if (users.length === 1 && this.addRoomForm.get('participants').value[this.selectedInput].name === users[0].name) {
                 this.userIds[this.selectedInput] = users[0]._id;
             } else {
-                this.searchedUsers = users.filter(user => user._id !== this.me);
+                this.searchedUsers = users.filter((user) => user._id !== this.me);
                 this.userIds[this.selectedInput] = false;
             }
         });
@@ -65,21 +64,21 @@ export class DialogAddingRoomComponent implements OnInit {
     }
 
     public onNoClick(): void {
-        this.dialogRef.close(false);
+        //this.dialogRef.close(false);
     }
 
     public onCreate(): void {
-        this.userIds = this.userIds.filter(userId => userId !== this.me);
+        this.userIds = this.userIds.filter((userId) => userId !== this.me);
         this.userIds = Array.from(new Set(this.userIds));
-        this.dialogRef.close({
-            roomTitle: this.addRoomForm.get('title').value,
-            participants: this.userIds,
-            isPublic: this.isPublic
-        });
+        // this.dialogRef.close({
+        //     roomTitle: this.addRoomForm.get('title').value,
+        //     participants: this.userIds,
+        //     isPublic: this.isPublic
+        // });
     }
 
     public onSearch(): void {
-        this.addRoomForm.valueChanges.subscribe(changes => {
+        this.addRoomForm.valueChanges.subscribe((changes) => {
             if (this.selectedInput !== null) {
                 if (changes.participants[this.selectedInput].name.length > 2) {
                     this.socketService.emit('searchUsers', changes.participants[this.selectedInput].name);
@@ -93,8 +92,8 @@ export class DialogAddingRoomComponent implements OnInit {
     }
 
     public validateInputs(): boolean {
-        this.userIds = this.userIds.filter(userId => userId !== this.me);
-        return this.userIds.every(item => !!item) && this.userIds.length > 0;
+        this.userIds = this.userIds.filter((userId) => userId !== this.me);
+        return this.userIds.every((item) => !!item) && this.userIds.length > 0;
     }
 
     public switchPrivate(): void {

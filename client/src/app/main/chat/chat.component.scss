@@ -27,11 +27,11 @@
         justify-content: center;
     }
 
-    .room-wrapper {
+    .settings-wrapper {
         overflow: hidden;
     }
 
-    .room-list {
+    .rooms {
         user-select: none;
         border: 0 !important;
         cursor: pointer;
@@ -101,7 +101,7 @@
         background: #e6e7f2;
     }
 
-    .add-btn {
+    .add-room-btn {
         background: rgba(0, 0, 0, 0.38);
 
         img {
@@ -112,7 +112,7 @@
         }
     }
 
-    .room-list {
+    .rooms {
         background: rgba(0, 0, 0, 0.37);
 
         mat-icon {
@@ -159,7 +159,7 @@
     }
 
 
-    .add-btn {
+    .add-room-btn {
         background: rgba(0, 0, 0, 0.18);
 
         img {
@@ -171,7 +171,7 @@
         }
     }
 
-    .room-list {
+    .rooms {
         background: rgba(0, 0, 0, 0.18);
 
         mat-icon {

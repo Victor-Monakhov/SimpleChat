@@ -1,0 +1,99 @@
+@import "mixins.scss";
+@import "variables.scss";
+@import "colors.scss";
+@import "classes/panel-hat.scss";
+@import "themes/light-theme.scss";
+@import "themes/dark-theme.scss";
+@import "scrollbar";
+
+.contacts-wrapper {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    border-left: 1px solid;
+    transition: 0.3s;
+
+    .panel-hat {
+        @include media-property(H, justify-content, space-between, space-between, flex-end);
+
+        .close-panel {
+            @include media-property(H, display, block, block, none);
+        }
+    }
+
+    .scrollbar {
+        overflow-y: auto;
+        margin: 20px 0;
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            font-size: 1.3rem;
+            font-family: 'Muli', sans-serif;
+            font-weight: 300;
+            margin: 0 10px;
+
+            .contact {
+                display: flex;
+                align-items: center;
+                column-gap: 10px;
+                height: 2.5rem;
+                cursor: pointer;
+
+                mat-icon {
+                    width: auto;
+                    height: auto;
+                    font-size: 1rem;
+                }
+
+                .avatar {
+                    width: 2.5rem;
+                    min-width: 2.5rem;
+                    height: 2.5rem;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        border-radius: 50%;
+                    }
+                }
+
+                .contact-info {
+                    $contact-side-margin: 20px;
+                    $contact-icon-width: 16px;
+                    $contact-avatar-width: 40px;
+                    $column-gap: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    width: $contact-panel-width -
+                    $contact-side-margin -
+                    $contact-icon-width -
+                    $contact-avatar-width -
+                    $column-gap -
+                    $scroll-width;
+                    span{
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+        }
+    }
+}
+
+:host-context(.light) {
+    mat-icon {
+        color: $blue;
+    }
+}
+
+:host-context(.dark) {
+    .contact {
+        color: $whiteA07;
+
+        mat-icon {
+            color: $red;
+        }
+    }
+}
