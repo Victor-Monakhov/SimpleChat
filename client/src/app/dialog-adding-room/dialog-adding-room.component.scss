@@ -4,6 +4,8 @@
 @import "themes/light-theme.scss";
 @import "themes/dark-theme.scss";
 @import "scrollbar";
+@import "classes/buttons.scss";
+@import "classes/form-item-wrapper.scss";
 
 .add-room-wrapper {
     @include media-property(V, height, 100%, 100%);
@@ -28,9 +30,12 @@
     }
 
     .scrollbar {
+        @include media-property(H, padding, 0 10px 0 20px, 0 20px 0 30px);
+        @include media-property(H, margin, 0 10px 10px 0, 0 10px 20px 0);
+        @include media-property(H, width, calc(100% - 40px), calc(100% - 60px));
         overflow-y: auto;
-        margin: 0 10px 20px 30px;
-        width: calc(100% - 40px);
+        display: flex;
+        flex-direction: column;
 
         h1 {
             @include media-property(H, font-size, 30px, 35px);
@@ -39,9 +44,26 @@
             font-weight: 400;
             margin: 0 0 20px 0;
         }
-
-        mat-slide-toggle {
+        .room-type{
             margin-bottom: 20px;
+        }
+
+        .form{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+
+            .add-btn {
+                width: 80%;
+                margin-bottom: 30px;
+            }
+
+            .participants-wrapper{
+                width: 100%;
+            }
+
         }
 
         .dialog-content-wrapper {
@@ -63,14 +85,14 @@
 
 
 
-        .part-wrapper {
-            display: flex;
-            align-items: flex-start;
-
-            h2 {
-                margin-right: 20px;
-            }
-        }
+        //.part-wrapper {
+        //    display: flex;
+        //    align-items: flex-start;
+        //
+        //    h2 {
+        //        margin-right: 20px;
+        //    }
+        //}
 
         .close-btn {
             position: absolute;

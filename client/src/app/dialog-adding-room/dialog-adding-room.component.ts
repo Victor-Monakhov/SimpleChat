@@ -13,33 +13,26 @@ import {ApiService} from '../shared/services/api.service';
 })
 export class DialogAddingRoomComponent implements OnInit {
     private me = LocalStorageService.getUser()['id'];
-    public addRoomForm: FormGroup;
+    public form: FormGroup;
     public selectedInput: number = null;
     public searchedUsers: any;
     public userIds: any[] = [false];
     public isPublic = true;
-    public config: PerfectScrollbarConfigInterface = {wheelSpeed: 0.2, scrollingThreshold: 0};
-    public theme: string = 'dark';
 
     public constructor(private fb: FormBuilder,
-                private socketService: SocketService,
-                private chatService: ApiService) {}
+                private socketService: SocketService) {}
 
     public ngOnInit(): void {
-        this.chatService.theme.subscribe((selectedTheme) => {
-            this.theme = selectedTheme;
-        });
-        this.addRoomForm = this.fb.group({
-            title: ['', [
-                Validators.required,
-                Validators.minLength(3),
-                Validators.maxLength(20)]],
-            participants: this.fb.array([this.fb.group({name: ['', [Validators.required]]})])
+        this.form = this.fb.group({
+            title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+            participants: this.fb.array([this.fb.group({
+                name: ['', [Validators.required]]
+            })])
         });
         this.onSearch();
 
         this.socketService.listen('searchResult').subscribe((users) => {
-            if (users.length === 1 && this.addRoomForm.get('participants').value[this.selectedInput].name === users[0].name) {
+            if (users.length === 1 && this.form.get('participants').value[this.selectedInput].name === users[0].name) {
                 this.userIds[this.selectedInput] = users[0]._id;
             } else {
                 this.searchedUsers = users.filter((user) => user._id !== this.me);
@@ -49,7 +42,7 @@ export class DialogAddingRoomComponent implements OnInit {
     }
 
     public get participants(): FormArray {
-        return this.addRoomForm.get('participants') as FormArray;
+        return this.form.get('participants') as FormArray;
     }
 
     public addParticipant(): void {
@@ -78,7 +71,7 @@ export class DialogAddingRoomComponent implements OnInit {
     }
 
     public onSearch(): void {
-        this.addRoomForm.valueChanges.subscribe((changes) => {
+        this.form.valueChanges.subscribe((changes) => {
             if (this.selectedInput !== null) {
                 if (changes.participants[this.selectedInput].name.length > 2) {
                     this.socketService.emit('searchUsers', changes.participants[this.selectedInput].name);

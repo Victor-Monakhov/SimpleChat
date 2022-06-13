@@ -16,7 +16,7 @@
                 </mat-slide-toggle>
                 <mat-icon class="theme-icon">brightness_3</mat-icon>
             </div>
-            <div class="add-room-btn" (click)="createRoom()">
+            <div class="add-btn" (click)="createRoom()">
                 <mat-icon>add</mat-icon>
                 <span>Create new room</span>
             </div>
@@ -40,7 +40,7 @@
                             <span>{{unread[room._id] > 0 ? unread[room._id] : "0"}}</span>
                         </div>
                         <div class="room-info">
-                            <span class="room-title">{{room.title}}</span>
+                            <span class="form-item-wrapper">{{room.title}}</span>
                             <small *ngIf="room._id !== 'common'">
                                 Last action: {{room.lastAction | date: 'HH:mm:ss - dd.MM.yy'}}
                             </small>
@@ -54,7 +54,7 @@
                     <div class="room">
                         <div class="unread"></div>
                         <div class="room-info">
-                            <span class="room-title">{{room.title}}</span>
+                            <span class="form-item-wrapper">{{room.title}}</span>
                             <hr>
                         </div>
                     </div>

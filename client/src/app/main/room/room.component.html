@@ -11,7 +11,7 @@
                             vertical_split
                         </mat-icon>
                     </button>
-                    <div class="room-title">
+                    <div class="form-item-wrapper">
                         <mat-icon *ngIf="apiService.device['isDesktop']">meeting_room</mat-icon>
                         <div class="room-title-text">
                             {{currentRoom.title}}
@@ -75,7 +75,7 @@
                         vertical_split
                     </mat-icon>
                 </button>
-                <span class="room-title">
+                <span class="form-item-wrapper">
                 <mat-icon>meeting_room</mat-icon>
                     {{currentRoom.title}}
             </span>

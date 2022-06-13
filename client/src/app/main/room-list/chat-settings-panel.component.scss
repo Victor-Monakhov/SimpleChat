@@ -6,6 +6,7 @@
 @import "themes/light-theme.scss";
 @import "themes/dark-theme.scss";
 @import "scrollbar.scss";
+@import "classes/buttons.scss";
 
 .settings-wrapper {
     display: flex;
@@ -38,29 +39,6 @@
                     height: 2rem;
                     font-size: 2rem;
                     user-select: none;
-                }
-            }
-
-            .add-room-btn {
-                padding: 5px 0;
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                user-select: none;
-                border: none;
-                cursor: pointer;
-                width: 100%;
-                height: auto;
-
-                span {
-                    font-weight: 300;
-                    font-size: 1.5rem;
-                }
-
-                mat-icon {
-                    font-size: 2rem;
-                    height: auto;
-                    width: auto;
                 }
             }
 
@@ -110,7 +88,7 @@
                     width: $contact-panel-width - $room-side-margin - $unread-width - $column-gap - $scroll-width;
 
 
-                    .room-title {
+                    .form-item-wrapper {
                         font-family: 'Montserrat Alternates', sans-serif;
                         font-weight: 400;
                         font-size: 1.5rem;
@@ -125,7 +103,7 @@
 }
 
 :host-context(.light) {
-    .add-room-btn {
+    .add-btn {
         background: $blackA02;
     }
 
@@ -145,7 +123,7 @@
 }
 
 :host-context(.dark) {
-    .add-room-btn {
+    .add-btn {
         background: $blackA04;
     }
 

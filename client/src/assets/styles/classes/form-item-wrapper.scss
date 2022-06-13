@@ -1,0 +1,34 @@
+.form-item-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    height: 3rem;
+    margin-bottom: 20px;
+    width: 100%;
+    position: relative;
+    label{
+        position: absolute;
+        transition: 0.3s ease-out;
+        font-size: 1rem;
+        bottom: 0;
+        cursor: text;
+    }
+    input[type=text]:focus+label,
+    input[type=text]:not(:placeholder-shown)+label{
+        bottom: 2rem;
+        font-size: 0.8rem;
+        cursor: default;
+    }
+    input[type=text]{
+        border: none;
+        font-size: 1rem;
+        outline: none;
+        background: transparent;
+        border-bottom: 1px solid;
+        height: 1.5rem;
+        z-index: 1;
+        &::placeholder{
+            color: transparent;
+        }
+    }
+}

@@ -1,0 +1,22 @@
+.add-btn{
+    padding: 5px 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    user-select: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    height: auto;
+
+    span {
+        font-weight: 300;
+        font-size: 1.5rem;
+    }
+
+    mat-icon {
+        font-size: 2rem;
+        height: auto;
+        width: auto;
+    }
+}
