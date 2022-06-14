@@ -1,34 +1,88 @@
+@import "scrollbar.scss";
+
 .form-item-wrapper{
     display: flex;
-    flex-direction: column;
-    justify-content: end;
+    align-items: center;
     height: 3rem;
     margin-bottom: 20px;
     width: 100%;
-    position: relative;
-    label{
-        position: absolute;
-        transition: 0.3s ease-out;
-        font-size: 1rem;
-        bottom: 0;
-        cursor: text;
+
+    .control-wrapper{
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        position: relative;
+        width: 100%;
+        flex-shrink: 1;
+        label{
+            position: absolute;
+            transition: 0.3s ease-out;
+            font-size: 1rem;
+            bottom: 0;
+            cursor: text;
+        }
+        input[type=text]:focus+label,
+        input[type=text]:not(:placeholder-shown)+label{
+            bottom: 2rem;
+            font-size: 0.8rem;
+            cursor: default;
+        }
+        input[type=text]{
+            border: none;
+            font-size: 1rem;
+            outline: none;
+            background: transparent;
+            border-bottom: 1px solid;
+            height: 1.5rem;
+            z-index: 1;
+            &::placeholder{
+                color: transparent;
+                user-select: none;
+            }
+        }
+        .tip{
+            width: calc(100% - 20px);
+            background-color: $white;
+            position: absolute;
+            top: 100%;
+            z-index: 2;
+            border-bottom-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            padding: 10px;
+            .scrollbar{
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                max-height: 100px;
+                .tip-item-wrapper{
+                    display: flex;
+                    flex-direction: column;
+                    .info{
+                        display: flex;
+                        align-items: flex-end;
+                        column-gap: 20px;
+                        cursor: pointer;
+                        img{
+                            height: 2rem;
+                            width: 2rem;
+                            border-radius: 50%;
+                        }
+                        p{
+                            margin: 0;
+                        }
+                    }
+                }
+            }
+        }
     }
-    input[type=text]:focus+label,
-    input[type=text]:not(:placeholder-shown)+label{
-        bottom: 2rem;
-        font-size: 0.8rem;
-        cursor: default;
-    }
-    input[type=text]{
-        border: none;
-        font-size: 1rem;
-        outline: none;
-        background: transparent;
-        border-bottom: 1px solid;
-        height: 1.5rem;
-        z-index: 1;
-        &::placeholder{
-            color: transparent;
+    
+    .delete-item{
+        flex-shrink: 0;
+        margin-left: 20px;
+        font-size: 25px;
+        cursor: pointer;
+        &:active{
+            font-size: 22px;
         }
     }
 }

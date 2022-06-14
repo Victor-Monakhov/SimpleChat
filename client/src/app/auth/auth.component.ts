@@ -10,7 +10,6 @@ import {NAVIGATE} from '../app.config';
     template: ''
 })
 export class AuthComponent implements OnInit {
-    public user: IUser;
 
     public constructor(private router: Router,
                        private route: ActivatedRoute,
@@ -18,8 +17,7 @@ export class AuthComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.user = this.route.snapshot.queryParams as IUser;
-        LocalStorageService.setUser(JSON.stringify(this.user));
+        LocalStorageService.setUser(JSON.stringify(this.route.snapshot.queryParams as IUser));
         if (this.authService.isAuthenticated()) {
             this.router.navigate([`/${NAVIGATE.CHAT}`]).then();
         } else {

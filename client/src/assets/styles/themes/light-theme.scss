@@ -16,6 +16,10 @@
         color: $black;
     }
 
+    .add-btn {
+        background: $blackA02;
+    }
+
     ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
         background-color: $blue;
     }

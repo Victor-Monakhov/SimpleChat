@@ -103,10 +103,6 @@
 }
 
 :host-context(.light) {
-    .add-btn {
-        background: $blackA02;
-    }
-
     input {
         box-shadow: 0 0 10px $blackA05;
         background: $whiteA05;
@@ -123,10 +119,6 @@
 }
 
 :host-context(.dark) {
-    .add-btn {
-        background: $blackA04;
-    }
-
     input {
         background: $whiteA05;
 
