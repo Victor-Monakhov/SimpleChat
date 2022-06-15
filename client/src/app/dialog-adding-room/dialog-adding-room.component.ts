@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
@@ -6,14 +6,13 @@ import {SocketService} from '../shared/services/socket.service';
 import {LocalStorageService} from '../shared/services/local-storage.service';
 import {ApiService} from '../shared/services/api.service';
 import {IUser} from '../shared/models/IUser';
+import {UserService} from '../shared/services/user.service';
+import {SubSink} from 'subsink';
 
 
-export interface IAddParticipent{
-    name: FormControl<string>;
-}
 export interface IAddRoomForm{
     title: FormControl<string>;
-    participants: FormArray<FormGroup<IAddParticipent>>;
+    participants: FormArray<FormGroup<{name: FormControl<string>}>>;
 }
 
 @Component({
@@ -21,16 +20,20 @@ export interface IAddRoomForm{
     templateUrl: './dialog-adding-room.component.html',
     styleUrls: ['./dialog-adding-room.component.scss']
 })
-export class DialogAddingRoomComponent implements OnInit {
+export class DialogAddingRoomComponent implements OnInit, OnDestroy {
+    private subs: SubSink = new SubSink();
     private me = LocalStorageService.getUser()['id'];
     public form: FormGroup<IAddRoomForm>;
     public selectedInput: number = -1;
-    public searchedUsers: any;
+    public selectedUsers: IUser[] = [];
+    public searchedUsers: IUser[] = [];
+    public participants: FormArray = {} as FormArray;
     public userIds: any[] = [false];
     public isPublic = true;
 
     public constructor(private fb: FormBuilder,
-                    private socketService: SocketService) {}
+                    private userService: UserService,
+                    private apiService: ApiService) {}
 
     public ngOnInit(): void {
         this.form = this.fb.group({
@@ -39,37 +42,24 @@ export class DialogAddingRoomComponent implements OnInit {
                 this.fb.group({name: ['', [Validators.required]]})
             ])
         });
-        this.onSearch();
-
-        this.socketService.listen('searchResult').subscribe((users) => {
-            console.log(users);
-            
-            // if (users.length === 1 && this.form.get('participants').value[this.selectedInput].name === users[0].name) {
-            //    // this.userIds[this.selectedInput] = users[0]._id;
-            // } else {
-            //     this.searchedUsers = users.filter((user) => user._id !== this.me);
-            //  //   this.userIds[this.selectedInput] = false;
-            // }
-        });
+        this.participants = this.form.get('participants') as FormArray;
+        this.formChangesListener();
+        this.searchedUsersListener();
     }
 
-    public pushId(user: IUser): void {
-        // this.userIds[this.selectedInput] = userId;
-        // this.form.controls['participants'][this.selectedInput].setValue(user.name);
-        console.log((this.form.get('participants') as FormArray).controls[this.selectedInput]);
+    public ngOnDestroy(): void {
+        this.subs.unsubscribe();
     }
 
-    public onSearch(): void {
-        this.form.valueChanges.subscribe((changes) => {
-            if (this.selectedInput >= 0 && changes.participants[this.selectedInput].name.length > 2) {
-                    this.socketService.emit('searchUsers', changes.participants[this.selectedInput].name);
-            }
-        });
+    public selectUser(user: IUser): void {
+        if (this.selectedInput >= 0) {
+            this.selectedUsers.push(user);
+            this.participants.controls[this.selectedInput].get('name').setValue(user.name);
+        }
     }
 
     public addParticipant(): void {
         this.participants.push(this.fb.group({name: ['', [Validators.required]]}));
-        // this.userIds.push(false);
     }
 
     public switchPrivate(): void {
@@ -77,14 +67,41 @@ export class DialogAddingRoomComponent implements OnInit {
     }
 
     public deleteParticipant(index: number): void {
-        this.selectedInput = null;
+        this.selectedInput = -1;
         this.participants.removeAt(index);
-        // this.userIds.splice(index, 1);
     }
 
-    public get participants(): FormArray {
-        return this.form.get('participants') as FormArray;
+    private formChangesListener(): void {
+        this.subs.add(
+            this.form.valueChanges.subscribe((changes) => {
+                if (this.selectedInput >= 0) {
+                    const name = changes.participants[this.selectedInput].name;
+                    if (name.length > 2) {
+                        this.apiService.setUsersSearching(name);
+                    }
+                }
+            })
+        );
     }
+
+    private searchedUsersListener(): void {
+        this.subs.add(
+            this.userService.searchedUsers$.subscribe((users) => {
+                this.searchedUsers = users.filter((user) => {
+                    for (let i = 0; i < this.selectedUsers.length; ++i) {
+                        if (user._id === this.selectedUsers[i]._id) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+            })
+        );
+    }
+
+    public in: number = 0;
+
+    
 
    
 

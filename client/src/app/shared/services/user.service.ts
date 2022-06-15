@@ -4,17 +4,21 @@ import {IRoom} from '../models/IRoom';
 import {LocalStorageService} from './local-storage.service';
 import {AuthService} from './auth.service';
 import {SocketService} from './socket.service';
+import {ApiService} from './api.service';
+import {Observable} from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
     public user: IUser = {} as IUser;
+    public searchedUsers$: Observable<IUser[]> = this.apiService.getUsersSearchingResult();
     public currentRoom: IRoom = {} as IRoom;
     public rooms: IRoom[] = [];
 
     public constructor(private authService: AuthService,
-                       private socketService: SocketService) {
+                       private socketService: SocketService,
+                       private apiService: ApiService) {
         this.init();
     }
 

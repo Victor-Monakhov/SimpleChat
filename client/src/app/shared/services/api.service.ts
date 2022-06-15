@@ -69,4 +69,12 @@ export class ApiService {
     public setRoomsSearching(text: string): void {
         this.socketService.emit(API_OUTPUT_EVENT.SEARCH_ROOMS, text);
     }
+
+    public getUsersSearchingResult(): Observable<IUser[]> {
+        return this.socketService.listen(API_INPUT_EVENT.SEARCH_USERS);
+    }
+
+    public setUsersSearching(name: string): void {
+        this.socketService.emit(API_OUTPUT_EVENT.SEARCH_USERS, name);
+    }
 }

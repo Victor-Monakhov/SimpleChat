@@ -7,6 +7,7 @@ import {THEMES} from '../shared/enums/theme.enum';
 import {SubSink} from 'subsink';
 import {IRoom} from '../shared/models/IRoom';
 import {PanelService} from '../shared/services/panel.service';
+import {UserService} from '../shared/services/user.service';
 
 @Component({
     selector: 'app-main',
@@ -19,12 +20,13 @@ export class MainComponent implements OnInit {
     private subs: SubSink = new SubSink();
 
     public constructor(private apiService: ApiService,
+                       private userService: UserService,
                        private panelService: PanelService) {
     }
 
     public ngOnInit(): void {
         this.themeListener();
-
+        // this.usersSearchingListener();
         const aSub = this.apiService.getBlacklist().subscribe((blacklist) => {
             LocalStorageService.setBlacklist(blacklist);
             aSub.unsubscribe();
@@ -44,6 +46,14 @@ export class MainComponent implements OnInit {
             this.apiService.getTheme().subscribe((theme) => this.theme = theme)
         );
     }
+
+    // private usersSearchingListener(): void {
+    //     this.subs.add(
+    //         this.apiService.getUsersSearchingResult().subscribe((users) => {
+    //             users.forEach((user) => this.userService.searchedUsers.push(user));
+    //         })
+    //     );
+    // }
 
     public get contactMenuTrigger$(): Subject<boolean> {
         return this.panelService.isContactMenu$;

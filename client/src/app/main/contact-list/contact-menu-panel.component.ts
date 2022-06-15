@@ -71,11 +71,11 @@ export class ContactMenuPanelComponent implements OnInit, OnDestroy {
         }
     }
 
-    public ngOnDestroy() {
+    public ngOnDestroy(): void {
         this.subs.unsubscribe();
     }
 
-    public onClose() {
+    public onClose(): void {
         this.panelService.isContactMenu$.next(false);
     }
 
