@@ -1,46 +1,53 @@
 @import "scrollbar.scss";
+@import "mixins.scss";
+@import "colors.scss";
 
-.form-item-wrapper{
+.form-item-wrapper {
     display: flex;
     align-items: center;
     height: 3rem;
     margin-bottom: 20px;
     width: 100%;
 
-    .control-wrapper{
+    .control-wrapper {
         display: flex;
         flex-direction: column;
         justify-content: end;
         position: relative;
         width: 100%;
         flex-shrink: 1;
-        label{
+
+        label {
             position: absolute;
             transition: 0.3s ease-out;
             font-size: 1rem;
             bottom: 0;
             cursor: text;
         }
+
         input[type=text]:focus+label,
-        input[type=text]:not(:placeholder-shown)+label{
+        input[type=text]:not(:placeholder-shown)+label {
             bottom: 2rem;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             cursor: default;
         }
-        input[type=text]{
+
+        input[type=text] {
             border: none;
             font-size: 1rem;
             outline: none;
             background: transparent;
-            border-bottom: 1px solid;
+            border-bottom: 2px solid;
             height: 1.5rem;
             z-index: 1;
-            &::placeholder{
+
+            &::placeholder {
                 color: transparent;
                 user-select: none;
             }
         }
-        .tip{
+
+        .tip {
             width: calc(100% - 20px);
             background-color: $white;
             position: absolute;
@@ -49,25 +56,30 @@
             border-bottom-right-radius: 10px;
             border-bottom-left-radius: 10px;
             padding: 10px;
-            .scrollbar{
+
+            .scrollbar {
                 margin: 0;
                 padding: 0;
                 width: 100%;
                 max-height: 100px;
-                .tip-item-wrapper{
+
+                .tip-item-wrapper {
                     display: flex;
                     flex-direction: column;
-                    .info{
+
+                    .info {
                         display: flex;
                         align-items: flex-end;
                         column-gap: 20px;
                         cursor: pointer;
-                        img{
+
+                        img {
                             height: 2rem;
                             width: 2rem;
                             border-radius: 50%;
                         }
-                        p{
+
+                        p {
                             margin: 0;
                         }
                     }
@@ -75,14 +87,39 @@
             }
         }
     }
-    
-    .delete-item{
+
+    .delete-item {
         flex-shrink: 0;
         margin-left: 20px;
         font-size: 25px;
         cursor: pointer;
-        &:active{
+
+        &:active {
             font-size: 22px;
+        }
+    }
+
+    .invalid {
+
+        label {
+            color: $red;
+        }
+
+        input[type=text] {
+            @include gradient-expansion(invalid_border, BI, to right, $black, $red, $black);
+            animation: invalid_border 0.3s ease-out 1 both;
+        }
+    }
+
+    .valid {
+
+        label {
+            color: $green;
+        }
+
+        input[type=text] {
+            @include gradient-expansion(valid_border, BI, to right, $black, $green, $black);
+            animation: valid_border 0.3s ease-out 1 both;
         }
     }
 }

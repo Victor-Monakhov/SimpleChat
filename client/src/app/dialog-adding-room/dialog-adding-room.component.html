@@ -30,16 +30,17 @@
                 <div *ngFor="let item of participants.controls; let i = index"
                      class="form-item-wrapper"
                      [formGroupName]="i">
-                    <div class="control-wrapper">
+                    <div [ngClass]="{'control-wrapper' : true, 'valid' : selectedUsers.has(i), 'invalid' : (!selectedUsers.has(i) && focusedInput !== i)}">
                         <input class="form-control"
                         type="text"
                         id="participant{{i}}"
                         formControlName="name"
                         placeholder="name"
                         autocomplete="off"
-                        (focus)="selectedInput = i">
+                        (focus)="onFocusInput(i)"
+                        (focusout)="onReseteFocusInput()">
                         <label for="participant{{i}}}">Participant - {{i + 1}} *</label>
-                        <div *ngIf="selectedInput === i && searchedUsers.length" class="tip">
+                        <div *ngIf="focusedInput === i && searchedUsers.length" class="tip">
                             <div class="scrollbar">
                                 <div *ngFor="let user of searchedUsers" class="tip-item-wrapper">
                                     <div class="info" (click)="selectUser(user)">
@@ -54,20 +55,20 @@
                     <mat-icon class="delete-item" (click)="deleteParticipant(i)">delete</mat-icon>
                 </div>
             </div>
-            <!-- <div formArrayName="participants">
-                <div *ngFor="let item of participants.controls; let pointIndex=index" [formGroupName]="pointIndex">
+            <div formArrayName="participants">
+                <!-- <div *ngFor="let item of participants.controls; let pointIndex=index" [formGroupName]="pointIndex">
                     <mat-form-field class="part-input">
                         <label>
                             <input matInput [placeholder]="'Participant - ' + (pointIndex + 1)"
                                    formControlName="name"
-                                   (keydown)="selectedInput = pointIndex"
+                                   (keydown)="selectedInput$.next(pointIndex)"
                                    [matAutocomplete]="auto"
                             >
                         </label>
                         <mat-autocomplete #auto="matAutocomplete">
                             <mat-option *ngFor="let state of searchedUsers"
                                         [value]="state.name"
-                                        (click)="pushId(state._id)"
+                                        (click)="selectUser(state)"
                             >
                                 <img [src]="state['avatar']" alt="" height="23">
                                 <span>{{state.name}}</span>
@@ -80,8 +81,8 @@
                             delete
                         </i>
                     </button>
-                </div>
-            </div> -->
+                </div> -->
+            </div>
         </form>
         <div mat-dialog-actions>
             <!--            <button mat-button (click)="onNoClick()" class="close-btn">-->

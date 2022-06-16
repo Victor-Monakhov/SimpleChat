@@ -8,6 +8,7 @@ import {ApiService} from '../shared/services/api.service';
 import {IUser} from '../shared/models/IUser';
 import {UserService} from '../shared/services/user.service';
 import {SubSink} from 'subsink';
+import {BehaviorSubject} from 'rxjs';
 
 
 export interface IAddRoomForm{
@@ -23,12 +24,12 @@ export interface IAddRoomForm{
 export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     private subs: SubSink = new SubSink();
     private me = LocalStorageService.getUser()['id'];
+    public selectedUsers: Map<number, IUser> = new Map();
+    public selectedInput$: BehaviorSubject<number> = new BehaviorSubject(-1);
+    public focusedInput: number = -1;
     public form: FormGroup<IAddRoomForm>;
-    public selectedInput: number = -1;
-    public selectedUsers: IUser[] = [];
-    public searchedUsers: IUser[] = [];
     public participants: FormArray = {} as FormArray;
-    public userIds: any[] = [false];
+    public searchedUsers: IUser[] = [];
     public isPublic = true;
 
     public constructor(private fb: FormBuilder,
@@ -43,6 +44,7 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
             ])
         });
         this.participants = this.form.get('participants') as FormArray;
+        this.inputListener();
         this.formChangesListener();
         this.searchedUsersListener();
     }
@@ -52,9 +54,10 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     }
 
     public selectUser(user: IUser): void {
-        if (this.selectedInput >= 0) {
-            this.selectedUsers.push(user);
-            this.participants.controls[this.selectedInput].get('name').setValue(user.name);
+        const selectedInput = this.selectedInput$.value;
+        if (selectedInput >= 0) {
+            this.participants.controls[selectedInput].get('name').setValue(user.name);
+            this.selectedUsers.set(selectedInput, user);
         }
     }
 
@@ -67,17 +70,38 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     }
 
     public deleteParticipant(index: number): void {
-        this.selectedInput = -1;
+        this.selectedInput$.next(-1);
         this.participants.removeAt(index);
+    }
+
+    public onFocusInput(index: number): void {
+        this.focusedInput = index;
+        this.selectedInput$.next(index);
+    }
+
+    public onReseteFocusInput(): void {
+        setTimeout(() => this.focusedInput = -1, 300);
+    }
+
+    private inputListener(): void {
+        this.subs.add(
+            this.selectedInput$.subscribe(() => this.searchedUsers = [])
+        );
     }
 
     private formChangesListener(): void {
         this.subs.add(
             this.form.valueChanges.subscribe((changes) => {
-                if (this.selectedInput >= 0) {
-                    const name = changes.participants[this.selectedInput].name;
+                const selectedInput = this.selectedInput$.value;
+                if (selectedInput >= 0) {
+                    const name = changes.participants[selectedInput].name;
                     if (name.length > 2) {
                         this.apiService.setUsersSearching(name);
+                    } else {
+                        this.searchedUsers = [];
+                    }
+                    if (this.selectedUsers.has(selectedInput) && selectedInput === this.focusedInput) {
+                        this.selectedUsers.delete(selectedInput);
                     }
                 }
             })
@@ -88,8 +112,9 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         this.subs.add(
             this.userService.searchedUsers$.subscribe((users) => {
                 this.searchedUsers = users.filter((user) => {
-                    for (let i = 0; i < this.selectedUsers.length; ++i) {
-                        if (user._id === this.selectedUsers[i]._id) {
+                    const selectedUsersArr = Array.from(this.selectedUsers.values());
+                    for (let i = 0; i < selectedUsersArr.length; ++i) {
+                        if (user._id === selectedUsersArr[i]._id) {
                             return false;
                         }
                     }
@@ -98,8 +123,6 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
             })
         );
     }
-
-    public in: number = 0;
 
     
 

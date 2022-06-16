@@ -1,3 +1,4 @@
+@import "colors.scss";
 
 @keyframes panel_go_left_visible{
     0% { right: -300px;}
@@ -8,3 +9,4 @@
     0% { right: 0;}
     100% {right: -300px;}
 }
+
