@@ -1,19 +1,15 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
-import {MatDialogRef} from '@angular/material/dialog';
-import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
-import {SocketService} from '../shared/services/socket.service';
-import {LocalStorageService} from '../shared/services/local-storage.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ApiService} from '../shared/services/api.service';
 import {IUser} from '../shared/models/IUser';
 import {UserService} from '../shared/services/user.service';
 import {SubSink} from 'subsink';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, filter, Subject, switchMap, tap} from 'rxjs';
 
 
 export interface IAddRoomForm{
     title: FormControl<string>;
-    participants: FormArray<FormGroup<{name: FormControl<string>}>>;
+    participants: FormArray<FormGroup<{id: FormControl<string>, name: FormControl<string>}>>;
 }
 
 @Component({
@@ -23,10 +19,11 @@ export interface IAddRoomForm{
 })
 export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     private subs: SubSink = new SubSink();
-    private me = LocalStorageService.getUser()['id'];
+    private formChanges$: Subject<FormControl> = new Subject<FormControl>();
+    public focusedInput$: BehaviorSubject<number> = new BehaviorSubject(-1);
     public selectedUsers: Map<number, IUser> = new Map();
-    public selectedInput$: BehaviorSubject<number> = new BehaviorSubject(-1);
-    public focusedInput: number = -1;
+    public selectedUsers2: Map<string, IUser> = new Map();
+    public firstFocusOnInputContainer: number[] = [];
     public form: FormGroup<IAddRoomForm>;
     public participants: FormArray = {} as FormArray;
     public searchedUsers: IUser[] = [];
@@ -40,7 +37,10 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         this.form = this.fb.group({
             title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
             participants: this.fb.array([
-                this.fb.group({name: ['', [Validators.required]]})
+                this.fb.group({
+                    id: [this.getRandomId(), []],
+                    name: ['', [Validators.required]]
+                })
             ])
         });
         this.participants = this.form.get('participants') as FormArray;
@@ -53,58 +53,74 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         this.subs.unsubscribe();
     }
 
-    public selectUser(user: IUser): void {
-        const selectedInput = this.selectedInput$.value;
-        if (selectedInput >= 0) {
-            this.participants.controls[selectedInput].get('name').setValue(user.name);
-            this.selectedUsers.set(selectedInput, user);
-        }
+    public selectUser(control: FormControl, user: IUser): void {
+        control.get('name').setValue(user.name);
+        this.selectedUsers2.set(control.get('id').value, user);
     }
 
     public addParticipant(): void {
-        this.participants.push(this.fb.group({name: ['', [Validators.required]]}));
+        this.participants.push(this.fb.group({id: [this.getRandomId(), []], name: ['', [Validators.required]]}));
     }
 
     public switchPrivate(): void {
         this.isPublic = !this.isPublic;
     }
 
-    public deleteParticipant(index: number): void {
-        this.selectedInput$.next(-1);
+    public deleteParticipant(index: number, control: FormControl): void {
         this.participants.removeAt(index);
+        if (this.firstFocusOnInputContainer.includes(index)) {
+            this.firstFocusOnInputContainer.splice(this.firstFocusOnInputContainer.indexOf(index), 1);
+        }
+        this.firstFocusOnInputContainer = this.firstFocusOnInputContainer.map((item) => {
+            if (item > index) {
+                --item;
+            }
+            return item;
+        });
+        if (this.selectedUsers2.has(control.get('id').value)) {
+            this.selectedUsers2.delete(control.get('id').value);
+        }
     }
 
-    public onFocusInput(index: number): void {
-        this.focusedInput = index;
-        this.selectedInput$.next(index);
+    public onFocusInput(index: number, control: FormControl): void {
+        this.formChanges$.next(control);
+        this.focusedInput$.next(index);
+        if (!this.firstFocusOnInputContainer.includes(index)) {
+            this.firstFocusOnInputContainer.push(index);
+        }
     }
 
     public onReseteFocusInput(): void {
-        setTimeout(() => this.focusedInput = -1, 300);
+        setTimeout(() => this.focusedInput$.next(-1), 300);
     }
 
     private inputListener(): void {
         this.subs.add(
-            this.selectedInput$.subscribe(() => this.searchedUsers = [])
+            this.focusedInput$.subscribe(() => this.searchedUsers = [])
         );
     }
 
     private formChangesListener(): void {
         this.subs.add(
-            this.form.valueChanges.subscribe((changes) => {
-                const selectedInput = this.selectedInput$.value;
-                if (selectedInput >= 0) {
-                    const name = changes.participants[selectedInput].name;
+            this.formChanges$.pipe(
+                filter((control) => !!control),
+                switchMap((control) => {
+                    return control.valueChanges;
+                }),
+                tap((changes) => {
+                    const id = changes['id'] as string;
+                    const name = changes['name'] as string;
                     if (name.length > 2) {
                         this.apiService.setUsersSearching(name);
                     } else {
                         this.searchedUsers = [];
                     }
-                    if (this.selectedUsers.has(selectedInput) && selectedInput === this.focusedInput) {
-                        this.selectedUsers.delete(selectedInput);
-                    }
-                }
-            })
+                    // if (this.selectedUsers2.has(name) && this.focusedInput$.value >= 0) {
+                    //     console.log('hello');
+                        
+                    this.selectedUsers2.delete(id);
+                    // }
+                })).subscribe()
         );
     }
 
@@ -112,7 +128,7 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         this.subs.add(
             this.userService.searchedUsers$.subscribe((users) => {
                 this.searchedUsers = users.filter((user) => {
-                    const selectedUsersArr = Array.from(this.selectedUsers.values());
+                    const selectedUsersArr = Array.from(this.selectedUsers2.values());
                     for (let i = 0; i < selectedUsersArr.length; ++i) {
                         if (user._id === selectedUsersArr[i]._id) {
                             return false;
@@ -122,6 +138,10 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
                 })
             })
         );
+    }
+
+    private getRandomId(): string {
+        return 'id' + new Date().getTime();
     }
 
     

@@ -30,20 +30,22 @@
                 <div *ngFor="let item of participants.controls; let i = index"
                      class="form-item-wrapper"
                      [formGroupName]="i">
-                    <div [ngClass]="{'control-wrapper' : true, 'valid' : selectedUsers.has(i), 'invalid' : (!selectedUsers.has(i) && focusedInput !== i)}">
+                    <div [ngClass]="{'control-wrapper' : true,
+                                     'valid' : selectedUsers2.has(item.get('id').value),
+                                     'invalid' : (!selectedUsers2.has(item.get('id').value) && (focusedInput$ | async) !== i && firstFocusOnInputContainer.includes(i))}">
                         <input class="form-control"
                         type="text"
                         id="participant{{i}}"
                         formControlName="name"
                         placeholder="name"
                         autocomplete="off"
-                        (focus)="onFocusInput(i)"
+                        (focus)="onFocusInput(i, item)"
                         (focusout)="onReseteFocusInput()">
                         <label for="participant{{i}}}">Participant - {{i + 1}} *</label>
-                        <div *ngIf="focusedInput === i && searchedUsers.length" class="tip">
+                        <div *ngIf="(focusedInput$ | async) === i && searchedUsers.length" class="tip">
                             <div class="scrollbar">
                                 <div *ngFor="let user of searchedUsers" class="tip-item-wrapper">
-                                    <div class="info" (click)="selectUser(user)">
+                                    <div class="info" (click)="selectUser(item, user)">
                                         <img [src]="user['avatar']" alt="avatar">
                                         <p>{{user.name}}</p>
                                     </div>
@@ -52,7 +54,7 @@
                             </div>
                         </div>
                      </div>
-                    <mat-icon class="delete-item" (click)="deleteParticipant(i)">delete</mat-icon>
+                    <mat-icon class="delete-item" (click)="deleteParticipant(i, item)">delete</mat-icon>
                 </div>
             </div>
             <div formArrayName="participants">
