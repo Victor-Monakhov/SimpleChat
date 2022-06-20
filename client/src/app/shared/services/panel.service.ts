@@ -8,6 +8,7 @@ export class PanelService {
     public isContactMenu$: Subject<boolean> = new Subject<boolean>();
     public isContactMenuFlipped$: Subject<boolean> = new Subject<boolean>();
     public isAddingRoom$: Subject<boolean> = new Subject<boolean>();
+    public userSearchingTips: Subject<boolean>[] = [];
 
     public constructor() {
     }

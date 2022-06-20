@@ -2,14 +2,14 @@
 @import 'animations.scss';
 
 /// Simplify media-queries
-// 
-/// @param {string} $direction - set horisontal(H) or vertical(V) direction for breakpoints
+//
+/// @param {string} $direction - set horizontal(H) or vertical(V) direction for breakpoints
 /// @param {string} $property - set the property which will be changes on breakpoints
 /// @param {number | string} $value-xs - set property value for xs breakpoint
-/// @param {number | string} $value-sm [$value-xs] - set property value for sm breakpoint 
-/// @param {number | string} $value-md [$value-sm] - set property value for md breakpoint 
-/// @param {number | string} $value-lg [$value-md] - set property value for lg breakpoint 
-/// @param {number | string} $value-xl [$value-lg] - set property value for xl breakpoint 
+/// @param {number | string} $value-sm [$value-xs] - set property value for sm breakpoint
+/// @param {number | string} $value-md [$value-sm] - set property value for md breakpoint
+/// @param {number | string} $value-lg [$value-md] - set property value for lg breakpoint
+/// @param {number | string} $value-xl [$value-lg] - set property value for xl breakpoint
 @mixin media-property($direction,
                       $property,
                       $value-xs,
@@ -23,35 +23,35 @@
     @else if($direction == H) {
         $direction: min-width;
     }
-    @media screen and (#{$direction}: calc(#{$xs} + 1px)) {
+    @media screen and (#{$direction}: $xs) {
         #{$property}: $value-xs;
     }
     @if ($value-sm != null) {
-        @media screen and (#{$direction}: calc(#{$sm} + 1px)) {
+        @media screen and (#{$direction}: $sm) {
             #{$property}: $value-sm;
         }
     }
     @if ($value-md != null) {
-        @media screen and (#{$direction}: calc(#{$md} + 1px)) {
+        @media screen and (#{$direction}: $md) {
             #{$property}: $value-md;
         }
     }
     @if ($value-lg != null) {
-        @media screen and (#{$direction}: calc(#{$lg} + 1px)) {
+        @media screen and (#{$direction}: $lg) {
             #{$property}: $value-lg;
         }
     }
     @if ($value-xl != null) {
-        @media screen and (#{$direction}: calc(#{$xl} + 1px)) {
+        @media screen and (#{$direction}: $xl) {
             #{$property}: $value-xl;
         }
     }
 }
 
 /// Create background or border-image animation by linear-gradient
-/// 
+///
 /// @param {string} $name - name for animation
-/// @param {string} $property - property to animate, BG - background, BI - border-image 
+/// @param {string} $property - property to animate, BG - background, BI - border-image
 /// @param {string} $direction [to right] - linear-gradient direction
 /// @param {string} $color1 [#ffffff] - left color for animation
 /// @param {string} $color2 [#000000] - central color for animation

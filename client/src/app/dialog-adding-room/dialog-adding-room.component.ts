@@ -1,15 +1,16 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ApiService} from '../shared/services/api.service';
 import {IUser} from '../shared/models/IUser';
 import {UserService} from '../shared/services/user.service';
 import {SubSink} from 'subsink';
 import {BehaviorSubject, filter, Subject, switchMap, tap} from 'rxjs';
+import {PanelService} from '../shared/services/panel.service';
 
 
-export interface IAddRoomForm{
+export interface IAddRoomForm {
     title: FormControl<string>;
-    participants: FormArray<FormGroup<{id: FormControl<string>, name: FormControl<string>}>>;
+    participants: FormArray<FormGroup<{ id: FormControl<string>, name: FormControl<string> }>>;
 }
 
 @Component({
@@ -19,19 +20,20 @@ export interface IAddRoomForm{
 })
 export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     private subs: SubSink = new SubSink();
-    private formChanges$: Subject<FormControl> = new Subject<FormControl>();
+    private formChanges$: Subject<AbstractControl> = new Subject<AbstractControl>();
     public focusedInput$: BehaviorSubject<number> = new BehaviorSubject(-1);
     public selectedUsers: Map<number, IUser> = new Map();
-    public selectedUsers2: Map<string, IUser> = new Map();
+    //public selectedUsers2: Map<string, IUser> = new Map();
     public firstFocusOnInputContainer: number[] = [];
     public form: FormGroup<IAddRoomForm>;
-    public participants: FormArray = {} as FormArray;
     public searchedUsers: IUser[] = [];
     public isPublic = true;
 
     public constructor(private fb: FormBuilder,
-                    private userService: UserService,
-                    private apiService: ApiService) {}
+                       private panelService: PanelService,
+                       private userService: UserService,
+                       private apiService: ApiService) {
+    }
 
     public ngOnInit(): void {
         this.form = this.fb.group({
@@ -43,7 +45,7 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
                 })
             ])
         });
-        this.participants = this.form.get('participants') as FormArray;
+        this.panelService.userSearchingTips.push(new Subject<boolean>());
         this.inputListener();
         this.formChangesListener();
         this.searchedUsersListener();
@@ -53,12 +55,13 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         this.subs.unsubscribe();
     }
 
-    public selectUser(control: FormControl, user: IUser): void {
-        control.get('name').setValue(user.name);
-        this.selectedUsers2.set(control.get('id').value, user);
+    public selectUser(user: IUser): void {
+        this.participants.controls[this.focusedInput$.value].get('name').setValue(user.name);
+        this.selectedUsers.set(this.focusedInput$.value, user);
     }
 
     public addParticipant(): void {
+        this.panelService.userSearchingTips.push(new Subject<boolean>());
         this.participants.push(this.fb.group({id: [this.getRandomId(), []], name: ['', [Validators.required]]}));
     }
 
@@ -66,23 +69,25 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         this.isPublic = !this.isPublic;
     }
 
-    public deleteParticipant(index: number, control: FormControl): void {
+    public deleteParticipant(index: number, control: AbstractControl): void {
         this.participants.removeAt(index);
-        if (this.firstFocusOnInputContainer.includes(index)) {
-            this.firstFocusOnInputContainer.splice(this.firstFocusOnInputContainer.indexOf(index), 1);
+        this.firstFocusOnInputContainer = this.updateAfterDelete(this.firstFocusOnInputContainer, index);
+        this.panelService.userSearchingTips.splice(index, 1);
+        if (this.selectedUsers.has(index)) {
+            this.selectedUsers.delete(index);
         }
-        this.firstFocusOnInputContainer = this.firstFocusOnInputContainer.map((item) => {
-            if (item > index) {
-                --item;
+        const tmpSelectedUsers = new Map<number, IUser>()
+        Array.from(this.selectedUsers.entries()).forEach((item) => {
+            if (item[0] > index) {
+                tmpSelectedUsers.set(item[0] - 1, item[1]);
+            } else {
+                tmpSelectedUsers.set(item[0], item[1]);
             }
-            return item;
-        });
-        if (this.selectedUsers2.has(control.get('id').value)) {
-            this.selectedUsers2.delete(control.get('id').value);
-        }
+        })
+        this.selectedUsers = tmpSelectedUsers;
     }
 
-    public onFocusInput(index: number, control: FormControl): void {
+    public onFocusInput(index: number, control: AbstractControl): void {
         this.formChanges$.next(control);
         this.focusedInput$.next(index);
         if (!this.firstFocusOnInputContainer.includes(index)) {
@@ -90,8 +95,8 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         }
     }
 
-    public onReseteFocusInput(): void {
-        setTimeout(() => this.focusedInput$.next(-1), 300);
+    public tipTriggersHandler(index: number): void {
+        this.panelService.userSearchingTips[index].next(false);
     }
 
     private inputListener(): void {
@@ -114,11 +119,12 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
                         this.apiService.setUsersSearching(name);
                     } else {
                         this.searchedUsers = [];
+                        this.showTips(false);
                     }
                     // if (this.selectedUsers2.has(name) && this.focusedInput$.value >= 0) {
                     //     console.log('hello');
-                        
-                    this.selectedUsers2.delete(id);
+                    this.selectedUsers.delete(this.focusedInput$.value);
+                    // this.selectedUsers2.delete(id);
                     // }
                 })).subscribe()
         );
@@ -128,25 +134,48 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         this.subs.add(
             this.userService.searchedUsers$.subscribe((users) => {
                 this.searchedUsers = users.filter((user) => {
-                    const selectedUsersArr = Array.from(this.selectedUsers2.values());
+                    const selectedUsersArr = Array.from(this.selectedUsers.values());
                     for (let i = 0; i < selectedUsersArr.length; ++i) {
                         if (user._id === selectedUsersArr[i]._id) {
                             return false;
                         }
                     }
                     return true;
-                })
+                });
+                this.showTips(!!this.searchedUsers.length);
             })
         );
+    }
+
+    private showTips(flag: boolean): void {
+        this.panelService.userSearchingTips[this.focusedInput$.value].next(flag);
     }
 
     private getRandomId(): string {
         return 'id' + new Date().getTime();
     }
 
-    
+    private updateAfterDelete(array: number[], index: number): number[] {
+        if (array.includes(index)) {
+            array.splice(array.indexOf(index), 1);
+        }
+        array = array.map((item) => {
+            if (item > index) {
+                --item;
+            }
+            return item;
+        });
+        return array;
+    }
 
-   
+    public get tipTriggers(): Subject<boolean>[] {
+        return this.panelService.userSearchingTips;
+    }
+
+    public get participants(): FormArray {
+        return this.form.get('participants') as FormArray;
+    }
+
 
     public onNoClick(): void {
         //this.dialogRef.close(false);
@@ -162,9 +191,6 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         // // });
     }
 
-    
-
-    
 
     public validateInputs(): boolean {
         return true;

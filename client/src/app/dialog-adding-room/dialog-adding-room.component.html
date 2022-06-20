@@ -15,10 +15,10 @@
             <div class="form-item-wrapper">
                 <div class="control-wrapper">
                     <input class="form-control"
-                    type="text"
-                    id="title"
-                    formControlName="title"
-                    placeholder="title">
+                           type="text"
+                           id="title"
+                           formControlName="title"
+                           placeholder="title">
                     <label for="title">Title *</label>
                 </div>
             </div>
@@ -31,29 +31,22 @@
                      class="form-item-wrapper"
                      [formGroupName]="i">
                     <div [ngClass]="{'control-wrapper' : true,
-                                     'valid' : selectedUsers2.has(item.get('id').value),
-                                     'invalid' : (!selectedUsers2.has(item.get('id').value) && (focusedInput$ | async) !== i && firstFocusOnInputContainer.includes(i))}">
+                                     'valid' : selectedUsers.has(i),
+                                     'invalid' : (!selectedUsers.has(i) && firstFocusOnInputContainer.includes(i))}">
                         <input class="form-control"
-                        type="text"
-                        id="participant{{i}}"
-                        formControlName="name"
-                        placeholder="name"
-                        autocomplete="off"
-                        (focus)="onFocusInput(i, item)"
-                        (focusout)="onReseteFocusInput()">
-                        <label for="participant{{i}}}">Participant - {{i + 1}} *</label>
-                        <div *ngIf="(focusedInput$ | async) === i && searchedUsers.length" class="tip">
-                            <div class="scrollbar">
-                                <div *ngFor="let user of searchedUsers" class="tip-item-wrapper">
-                                    <div class="info" (click)="selectUser(item, user)">
-                                        <img [src]="user['avatar']" alt="avatar">
-                                        <p>{{user.name}}</p>
-                                    </div>
-                                    <hr>
-                                </div>
-                            </div>
-                        </div>
-                     </div>
+                               type="text"
+                               id="{{'participant' + i}}"
+                               formControlName="name"
+                               placeholder="name"
+                               autocomplete="off"
+                               [dropPanel]="tip"
+                               [trigger]="tipTriggers[i] | async"
+                               [backdropClass]="'backdrop-transparent'"
+                               [staticBackdrop] = false
+                               (triggerEvent) = "tipTriggersHandler(i)"
+                               (focus)="onFocusInput(i, item)">
+                        <label for="p{{'participant' + i}}">Participant - {{i + 1}} *</label>
+                    </div>
                     <mat-icon class="delete-item" (click)="deleteParticipant(i, item)">delete</mat-icon>
                 </div>
             </div>
@@ -101,5 +94,13 @@
         </div>
     </div>
 </div>
-<!--</div>-->
+
+
+<app-drop-panel #tip>
+    <app-users-search-tip
+        [ngClass]="['drop-tip']"
+        [tipContent]="searchedUsers"
+        (userEvent)="selectUser($event)">
+    </app-users-search-tip>
+</app-drop-panel>
 
