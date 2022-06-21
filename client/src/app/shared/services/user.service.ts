@@ -12,7 +12,6 @@ import {Observable} from 'rxjs';
 })
 export class UserService {
     public user: IUser = {} as IUser;
-    public searchedUsers$: Observable<IUser[]> = this.apiService.getUsersSearchingResult();
     public currentRoom: IRoom = {} as IRoom;
     public rooms: IRoom[] = [];
 

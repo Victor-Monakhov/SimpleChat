@@ -1,7 +1,7 @@
 import {
     Directive,
     ElementRef,
-    EventEmitter, HostListener,
+    EventEmitter,
     Input,
     OnChanges,
     Optional,
@@ -100,10 +100,4 @@ export class DropPanelDirective implements OnChanges {
             this.dropPanel.visible.next(false);
         }, this.animDaley);
     }
-
-    // @HostListener('click')
-    // private onClick(): void {
-    //     this.trigger = true;
-    //     this.onDrop();
-    // }
 }

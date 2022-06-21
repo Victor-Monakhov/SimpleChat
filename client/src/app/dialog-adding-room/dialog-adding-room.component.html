@@ -31,8 +31,8 @@
                      class="form-item-wrapper"
                      [formGroupName]="i">
                     <div [ngClass]="{'control-wrapper' : true,
-                                     'valid' : selectedUsers.has(i),
-                                     'invalid' : (!selectedUsers.has(i) && firstFocusOnInputContainer.includes(i))}">
+                                     'valid' : item.get('name').valid,
+                                     'invalid' : item.get('name').invalid}">
                         <input class="form-control"
                                type="text"
                                id="{{'participant' + i}}"
@@ -47,7 +47,7 @@
                                (focus)="onFocusInput(i, item)">
                         <label for="p{{'participant' + i}}">Participant - {{i + 1}} *</label>
                     </div>
-                    <mat-icon class="delete-item" (click)="deleteParticipant(i, item)">delete</mat-icon>
+                    <mat-icon class="delete-item" (click)="deleteParticipant(i)">delete</mat-icon>
                 </div>
             </div>
             <div formArrayName="participants">
@@ -99,7 +99,7 @@
 <app-drop-panel #tip>
     <app-users-search-tip
         [ngClass]="['drop-tip']"
-        [tipContent]="searchedUsers"
+        [tipContent]="searchedUsers$ | async"
         (userEvent)="selectUser($event)">
     </app-users-search-tip>
 </app-drop-panel>
