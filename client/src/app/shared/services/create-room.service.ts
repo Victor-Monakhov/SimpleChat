@@ -26,19 +26,6 @@ export class CreateRoomService implements OnDestroy {
         this.subs.unsubscribe();
     }
 
-    public updateFirstFocus(array: number[], index: number): number[] {
-        if (array.includes(index)) {
-            array.splice(array.indexOf(index), 1);
-        }
-        array = array.map((item) => {
-            if (item > index) {
-                --item;
-            }
-            return item;
-        });
-        return array;
-    }
-
     public deleteSelectedUser(index: number): void {
         if (this.selectedUsers.has(this.inputIds[index])) {
             this.selectedUsers.delete(this.inputIds[index]);

@@ -1,6 +1,6 @@
 <div class="add-room-wrapper">
     <div class="close">
-        <mat-icon (click)="onNoClick()">clear</mat-icon>
+        <mat-icon (click)="onClose()">clear</mat-icon>
     </div>
 
     <div class="scrollbar">
@@ -27,12 +27,12 @@
                 <span>New Participant</span>
             </div>
             <div class="participants-wrapper" formArrayName="participants">
-                <div *ngFor="let item of participants.controls; let i = index"
+                <div *ngFor="let control of participants.controls; let i = index"
                      class="form-item-wrapper"
                      [formGroupName]="i">
                     <div [ngClass]="{'control-wrapper' : true,
-                                     'valid' : item.get('name').valid,
-                                     'invalid' : item.get('name').invalid}">
+                                     'valid' : control.get('name').valid,
+                                     'invalid' : control.get('name').invalid && control.touched}">
                         <input class="form-control"
                                type="text"
                                id="{{'participant' + i}}"
@@ -42,56 +42,23 @@
                                [dropPanel]="tip"
                                [trigger]="tipTriggers[i] | async"
                                [backdropClass]="'backdrop-transparent'"
-                               [staticBackdrop] = false
-                               (triggerEvent) = "tipTriggersHandler(i)"
-                               (focus)="onFocusInput(i, item)">
+                               [staticBackdrop]=false
+                               (triggerEvent)="tipTriggersHandler(i)"
+                               (focus)="onFocusInput(i, control)">
                         <label for="p{{'participant' + i}}">Participant - {{i + 1}} *</label>
                     </div>
                     <mat-icon class="delete-item" (click)="deleteParticipant(i)">delete</mat-icon>
                 </div>
             </div>
-            <div formArrayName="participants">
-                <!-- <div *ngFor="let item of participants.controls; let pointIndex=index" [formGroupName]="pointIndex">
-                    <mat-form-field class="part-input">
-                        <label>
-                            <input matInput [placeholder]="'Participant - ' + (pointIndex + 1)"
-                                   formControlName="name"
-                                   (keydown)="selectedInput$.next(pointIndex)"
-                                   [matAutocomplete]="auto"
-                            >
-                        </label>
-                        <mat-autocomplete #auto="matAutocomplete">
-                            <mat-option *ngFor="let state of searchedUsers"
-                                        [value]="state.name"
-                                        (click)="selectUser(state)"
-                            >
-                                <img [src]="state['avatar']" alt="" height="23">
-                                <span>{{state.name}}</span>
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-                    <mat-icon *ngIf="userIds[pointIndex]" class="done">done</mat-icon>
-                    <button type="button" mat-button (click)="deleteParticipant(pointIndex)">
-                        <i class="material-icons">
-                            delete
-                        </i>
-                    </button>
-                </div> -->
-            </div>
         </form>
-        <div mat-dialog-actions>
-            <!--            <button mat-button (click)="onNoClick()" class="close-btn">-->
-            <!--                <i class="material-icons">-->
-            <!--                    clear-->
-            <!--                </i>-->
-            <!--            </button>-->
-            <button mat-button (click)="onCreate()" class="create-btn" [disabled]="!form.valid
-                || form.untouched
-                || !validateInputs()
-                || participants.length < 1
-            ">Create room
-            </button>
-        </div>
+<!--        <div mat-dialog-actions>-->
+<!--            <button mat-button (click)="onCreate()" class="create-btn" [disabled]="!form.valid-->
+<!--                || form.untouched-->
+<!--                || !validateInputs()-->
+<!--                || participants.length < 1-->
+<!--            ">Create room-->
+<!--            </button>-->
+<!--        </div>-->
     </div>
 </div>
 

@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {ApiService} from '../shared/services/api.service';
 import {IUser} from '../shared/models/IUser';
 import {UserService} from '../shared/services/user.service';
 import {SubSink} from 'subsink';
-import {BehaviorSubject, filter, Subject, switchMap, tap} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {PanelService} from '../shared/services/panel.service';
 import {CreateRoomService} from '../shared/services/create-room.service';
 import {VMValidator} from '../shared/classes/vm-validator.class';
@@ -27,12 +27,7 @@ export interface IAddRoomForm {
 })
 export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     private subs: SubSink = new SubSink();
-    // private formChanges$: Subject<FormGroup<IParticipantForm>> = new Subject();
-    // public focusedInput$: BehaviorSubject<number> = new BehaviorSubject(-1);
-    // public selectedUsers: Map<number, IUser> = new Map();
-    // public firstFocusOnInputContainer: number[] = [];
     public form: FormGroup<IAddRoomForm>;
-    // public searchedUsers: IUser[] = [];
     public isPublic = true;
 
     public constructor(private fb: FormBuilder,
@@ -43,17 +38,9 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        const inputId = this.getInputId();
         this.form = this.fb.group({
             title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
-            participants: this.fb.array([
-                this.fb.group({
-                    name: ['', [
-                        Validators.required,
-                        VMValidator.flag(this.checkSelectedUser(inputId))
-                    ]]
-                })
-            ])
+            participants: this.fb.array([this.getNewParticipantForm()])
         });
         this.panelService.userSearchingTips.push(new Subject<boolean>());
         this.searchedUsersListener();
@@ -64,21 +51,13 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     }
 
     public selectUser(user: IUser): void {
-        // this.selectedUsers.set(this.inputIds[this.focusedInput$.value], user);
         this.createRoomService.isSelectUser = true;
         this.participants.controls[this.focusedInput$.value].get('name').setValue(user.name);
-        // this.panelService.userSearchingTips[this.focusedInput$.value].next(false);
     }
 
     public addParticipant(): void {
         this.panelService.userSearchingTips.push(new Subject<boolean>());
-        const inputId = this.getInputId();
-        this.participants.push(this.fb.group({
-            name: ['', [
-                Validators.required,
-                VMValidator.flag(this.checkSelectedUser(inputId))
-            ]]
-        }));
+        this.participants.push(this.getNewParticipantForm());
     }
 
     public switchPrivate(): void {
@@ -87,7 +66,6 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
 
     public deleteParticipant(index: number): void {
         this.participants.removeAt(index);
-        // this.firstFocusOnInputContainer = this.createRoomService.updateFirstFocus(this.firstFocusOnInputContainer, index);
         this.panelService.userSearchingTips.splice(index, 1);
         this.createRoomService.deleteSelectedUser(index);
         this.createRoomService.inputIds.splice(index, 1);
@@ -96,9 +74,6 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     public onFocusInput(index: number, control: FormGroup<IParticipantForm>): void {
         this.createRoomService.formChanges$.next(control);
         this.focusedInput$.next(index);
-        // if (!this.firstFocusOnInputContainer.includes(index)) {
-        //     this.firstFocusOnInputContainer.push(index);
-        // }
     }
 
     public tipTriggersHandler(index: number): void {
@@ -109,8 +84,21 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         return () => this.selectedUsers.has(inputId);
     }
 
+    public onClose(): void {
+        this.panelService.isAddingRoom$.next(false);
+    }
+
     private showTips(flag: boolean): void {
         this.panelService.userSearchingTips[this.focusedInput$.value].next(flag);
+    }
+
+    private getNewParticipantForm(): FormGroup<IParticipantForm> {
+        return this.fb.group({
+            name: ['', [
+                Validators.required,
+                VMValidator.flag(this.checkSelectedUser(this.getInputId()))
+            ]]
+        });
     }
 
     private searchedUsersListener(): void {
@@ -120,16 +108,16 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
                 const name = this.participants.controls[this.focusedInput$.value].get('name').value;
                 const isUser = this.selectedUsers.has(this.inputIds[this.focusedInput$.value]);
                 const isSelectUser = this.createRoomService.isSelectUser;
-                let isNamesMatch;
-                if (isUser) {
-                    this.selectedUsers.delete(this.inputIds[this.focusedInput$.value]);
-                }
+                let isNamesMatch = false;
                 users.forEach((user) => {
                     isNamesMatch = name.toLowerCase() === user.name.toLowerCase();
                     if (isNamesMatch || isSelectUser) {
                         this.selectedUsers.set(this.inputIds[this.focusedInput$.value], user);
                     }
                 });
+                if (isUser && !isNamesMatch && users.length) {
+                    this.selectedUsers.delete(this.inputIds[this.focusedInput$.value]);
+                }
                 if (isSelectUser || isNamesMatch) {
                     this.participants.controls[this.focusedInput$.value].get('name').setValue(name);
                     this.createRoomService.isSelectUser = false;
@@ -166,11 +154,6 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
 
     public get inputIds(): number[] {
         return this.createRoomService.inputIds;
-    }
-
-
-    public onNoClick(): void {
-        //this.dialogRef.close(false);
     }
 
     public onCreate(): void {
