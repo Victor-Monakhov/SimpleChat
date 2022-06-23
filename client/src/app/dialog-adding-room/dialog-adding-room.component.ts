@@ -115,11 +115,7 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
                     } else {
                         this.searchedUsers = [];
                     }
-                    // if (this.selectedUsers2.has(name) && this.focusedInput$.value >= 0) {
-                    //     console.log('hello');
-                        
                     this.selectedUsers2.delete(id);
-                    // }
                 })).subscribe()
         );
     }
