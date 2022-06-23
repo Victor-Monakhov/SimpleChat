@@ -1,7 +1,7 @@
 import {
     Directive,
     ElementRef,
-    EventEmitter, HostListener,
+    EventEmitter,
     Input,
     OnChanges,
     Optional,
@@ -24,19 +24,24 @@ export class DropPanelDirective implements OnChanges {
     @Input() public dropPanel: IDropPanel;
     @Input() public trigger: boolean = false;
     @Input() public staticBackdrop: boolean = true;
+    @Input() public hasBackdrop: boolean = true;
     @Input() public animDaley: number = 0;
+    @Input() public backdropClass: string = 'backdrop-blackA05';
     @Output() public triggerEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
     private subs: SubSink = new SubSink();
 
     public constructor(public overlay: Overlay,
-                public elementRef: ElementRef,
-                public viewContainerRef: ViewContainerRef,
-                @Optional() public overlayRef: OverlayRef) {
+                       public elementRef: ElementRef<HTMLElement>,
+                       public viewContainerRef: ViewContainerRef,
+                       @Optional() public overlayRef: OverlayRef) {
 
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        (this.trigger) ? this.onDrop() : this.destroyMenu();
+        if (changes['trigger'] &&
+            changes['trigger'].previousValue !== changes['trigger'].currentValue) {
+            (this.trigger) ? this.onDrop() : this.destroyMenu();
+        }
     }
 
     private onDrop(): void {
@@ -46,7 +51,9 @@ export class DropPanelDirective implements OnChanges {
     private openMenu(): void {
         this.dropPanel.visible.next(true);
         this.overlayRef = this.overlay.create({
-            hasBackdrop: true,
+            hasBackdrop: this.hasBackdrop,
+            backdropClass: this.backdropClass,
+            width: this.elementRef.nativeElement.clientWidth,
             positionStrategy: this.overlay
                 .position()
                 .flexibleConnectedTo(this.elementRef)

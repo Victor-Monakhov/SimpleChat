@@ -1,0 +1,41 @@
+@import "colors.scss";
+
+.tip {
+    //width: 100%;
+    background-color: $white;
+    //position: absolute;
+    //top: 100%;
+    //z-index: 2;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    padding: 10px;
+
+    .scrollbar {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        max-height: 100px;
+
+        .tip-item-wrapper {
+            display: flex;
+            flex-direction: column;
+
+            .info {
+                display: flex;
+                align-items: flex-end;
+                column-gap: 20px;
+                cursor: pointer;
+
+                img {
+                    height: 2rem;
+                    width: 2rem;
+                    border-radius: 50%;
+                }
+
+                p {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}

@@ -26,7 +26,7 @@ export class MainComponent implements OnInit {
 
     public ngOnInit(): void {
         this.themeListener();
-        // this.usersSearchingListener();
+        this.usersSearchingListener();
         const aSub = this.apiService.getBlacklist().subscribe((blacklist) => {
             LocalStorageService.setBlacklist(blacklist);
             aSub.unsubscribe();
@@ -47,13 +47,13 @@ export class MainComponent implements OnInit {
         );
     }
 
-    // private usersSearchingListener(): void {
-    //     this.subs.add(
-    //         this.apiService.getUsersSearchingResult().subscribe((users) => {
-    //             users.forEach((user) => this.userService.searchedUsers.push(user));
-    //         })
-    //     );
-    // }
+    private usersSearchingListener(): void {
+        this.subs.add(
+            this.apiService.getUsersSearchingResult().subscribe((users) => {
+                this.userService.searchedUsers$.next(users);
+            })
+        );
+    }
 
     public get contactMenuTrigger$(): Subject<boolean> {
         return this.panelService.isContactMenu$;

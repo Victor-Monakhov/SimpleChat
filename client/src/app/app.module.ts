@@ -56,6 +56,7 @@ import {ContextMenuDirective} from "./shared/directives/context-menu.directive";
 import { DropPanelDirective } from './shared/directives/drop-panel.directive';
 import { DropPanelComponent } from './shared/components/drop-panel/drop-panel.component';
 import {OverlayModule} from '@angular/cdk/overlay';
+import { UsersSearchTipComponent } from './dialog-adding-room/users-search-tip/users-search-tip.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -84,7 +85,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         CustomContextMenuComponent,
         ContextMenuDirective,
         DropPanelDirective,
-        DropPanelComponent
+        DropPanelComponent,
+        UsersSearchTipComponent
     ],
     imports: [
         BrowserModule,

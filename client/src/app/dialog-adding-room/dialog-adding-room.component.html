@@ -1,6 +1,6 @@
 <div class="add-room-wrapper">
     <div class="close">
-        <mat-icon (click)="onNoClick()">clear</mat-icon>
+        <mat-icon (click)="onClose()">clear</mat-icon>
     </div>
 
     <div class="scrollbar">
@@ -15,10 +15,10 @@
             <div class="form-item-wrapper">
                 <div class="control-wrapper">
                     <input class="form-control"
-                    type="text"
-                    id="title"
-                    formControlName="title"
-                    placeholder="title">
+                           type="text"
+                           id="title"
+                           formControlName="title"
+                           placeholder="title">
                     <label for="title">Title *</label>
                 </div>
             </div>
@@ -27,79 +27,47 @@
                 <span>New Participant</span>
             </div>
             <div class="participants-wrapper" formArrayName="participants">
-                <div *ngFor="let item of participants.controls; let i = index"
+                <div *ngFor="let control of participants.controls; let i = index"
                      class="form-item-wrapper"
                      [formGroupName]="i">
                     <div [ngClass]="{'control-wrapper' : true,
-                                     'valid' : selectedUsers2.has(item.get('id').value),
-                                     'invalid' : (!selectedUsers2.has(item.get('id').value) && (focusedInput$ | async) !== i && firstFocusOnInputContainer.includes(i))}">
+                                     'valid' : control.get('id').valid,
+                                     'invalid' : control.get('id').invalid && control.touched}">
                         <input class="form-control"
-                        type="text"
-                        id="participant{{i}}"
-                        formControlName="name"
-                        placeholder="name"
-                        autocomplete="off"
-                        (focus)="onFocusInput(i, item)"
-                        (focusout)="onReseteFocusInput()">
-                        <label for="participant{{i}}}">Participant - {{i + 1}} *</label>
-                        <div *ngIf="(focusedInput$ | async) === i && searchedUsers.length" class="tip">
-                            <div class="scrollbar">
-                                <div *ngFor="let user of searchedUsers" class="tip-item-wrapper">
-                                    <div class="info" (click)="selectUser(item, user)">
-                                        <img [src]="user['avatar']" alt="avatar">
-                                        <p>{{user.name}}</p>
-                                    </div>
-                                    <hr>
-                                </div>
-                            </div>
-                        </div>
-                     </div>
-                    <mat-icon class="delete-item" (click)="deleteParticipant(i, item)">delete</mat-icon>
+                               type="text"
+                               id="{{'participant' + i}}"
+                               formControlName="name"
+                               placeholder="name"
+                               autocomplete="off"
+                               [dropPanel]="tip"
+                               [trigger]="tipTriggers[i] | async"
+                               [backdropClass]="'backdrop-transparent'"
+                               [staticBackdrop]=false
+                               (triggerEvent)="tipTriggersHandler(i)"
+                               (focus)="onFocusInput(i, control)">
+                        <label for="p{{'participant' + i}}">Participant - {{i + 1}} *</label>
+                    </div>
+                    <mat-icon class="delete-item" (click)="deleteParticipant(i)">delete</mat-icon>
                 </div>
             </div>
-            <div formArrayName="participants">
-                <!-- <div *ngFor="let item of participants.controls; let pointIndex=index" [formGroupName]="pointIndex">
-                    <mat-form-field class="part-input">
-                        <label>
-                            <input matInput [placeholder]="'Participant - ' + (pointIndex + 1)"
-                                   formControlName="name"
-                                   (keydown)="selectedInput$.next(pointIndex)"
-                                   [matAutocomplete]="auto"
-                            >
-                        </label>
-                        <mat-autocomplete #auto="matAutocomplete">
-                            <mat-option *ngFor="let state of searchedUsers"
-                                        [value]="state.name"
-                                        (click)="selectUser(state)"
-                            >
-                                <img [src]="state['avatar']" alt="" height="23">
-                                <span>{{state.name}}</span>
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-                    <mat-icon *ngIf="userIds[pointIndex]" class="done">done</mat-icon>
-                    <button type="button" mat-button (click)="deleteParticipant(pointIndex)">
-                        <i class="material-icons">
-                            delete
-                        </i>
-                    </button>
-                </div> -->
-            </div>
         </form>
-        <div mat-dialog-actions>
-            <!--            <button mat-button (click)="onNoClick()" class="close-btn">-->
-            <!--                <i class="material-icons">-->
-            <!--                    clear-->
-            <!--                </i>-->
-            <!--            </button>-->
-            <button mat-button (click)="onCreate()" class="create-btn" [disabled]="!form.valid
-                || form.untouched
-                || !validateInputs()
-                || participants.length < 1
-            ">Create room
-            </button>
-        </div>
+        <!--        <div mat-dialog-actions>-->
+        <!--            <button mat-button (click)="onCreate()" class="create-btn" [disabled]="!form.valid-->
+        <!--                || form.untouched-->
+        <!--                || !validateInputs()-->
+        <!--                || participants.length < 1-->
+        <!--            ">Create room-->
+        <!--            </button>-->
+        <!--        </div>-->
     </div>
 </div>
-<!--</div>-->
+
+
+<app-drop-panel #tip>
+    <app-users-search-tip
+        [ngClass]="['drop-tip']"
+        [tipContent]="searchedUsers"
+        (userEvent)="selectUser($event)">
+    </app-users-search-tip>
+</app-drop-panel>
 
