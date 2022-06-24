@@ -1,6 +1,6 @@
 @import "src/assets/styles/colors";
 
-:host-context(.dark){
+:host-context(.dark) {
     hr{
         border-color: $whiteA03;
     }
@@ -12,9 +12,14 @@
 
     .add-btn {
         background: $blackA04;
+        color: $white;
+        &:disabled {
+            background: $blackA02;
+            color: $whiteA05;
+        }
     }
 
-    .settings-wrapper, .contacts-wrapper {
+    .settings-wrapper, .contacts-wrapper, .add-room-wrapper {
         background-color: $background-dark;
         border-color: $whiteA05;
         color: $white;
@@ -27,6 +32,7 @@
     ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
         background-color: $orange;
     }
+
     .contacts-wrapper:hover, .settings-wrapper:hover, .add-room-wrapper:hover{
         ::-webkit-scrollbar-track{
             background: $blackA05;

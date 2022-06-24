@@ -1,6 +1,6 @@
 @import "src/assets/styles/colors";
 
-:host-context(.light){
+:host-context(.light) {
     hr{
         border-color: $blackA02;
     }
@@ -10,14 +10,19 @@
         box-shadow: 0 5px 20px -10px $black;
     }
 
-    .settings-wrapper, .contacts-wrapper{
+    .add-btn {
+        background: $blackA02;
+        color: $black;
+        &:disabled {
+            background: $blackA01;
+            color: $blackA05;
+        }
+    }
+
+    .settings-wrapper, .contacts-wrapper, .add-room-wrapper{
         background-color: $background-light;
         border-color:  $blackA02;
         color: $black;
-    }
-
-    .add-btn {
-        background: $blackA02;
     }
 
     ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {

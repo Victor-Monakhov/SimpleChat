@@ -6,7 +6,6 @@ import {UserService} from '../shared/services/user.service';
 import {SubSink} from 'subsink';
 import {filter, Subject, switchMap, tap} from 'rxjs';
 import {PanelService} from '../shared/services/panel.service';
-import {CreateRoomService} from '../shared/services/create-room.service';
 import {IAddRoomForm, IParticipantForm} from '../shared/interfaces/forms.interface';
 
 @Component({

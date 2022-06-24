@@ -7,7 +7,7 @@
     align-items: center;
     height: 3rem;
     margin-bottom: 20px;
-    width: 100%;
+    flex-shrink: 0;
 
     .control-wrapper {
         display: flex;

@@ -1,19 +1,19 @@
 <div class="add-room-wrapper">
-    <div class="close">
-        <mat-icon (click)="onClose()">clear</mat-icon>
-    </div>
-
-    <div class="scrollbar">
-        <h1>Create new room</h1>
-        <div class="room-type">
-            <mat-slide-toggle (change)="switchPrivate()">
-                {{!isPublic ? 'Private' : 'Public'}}
-            </mat-slide-toggle>
+    <div class="content">
+        <div class="close">
+            <mat-icon (click)="onClose()">clear</mat-icon>
         </div>
-
+        <h1>Create new room</h1>
         <form class="form" [formGroup]="form" (ngSubmit)="onCreate()">
+            <div class="room-type">
+                <mat-slide-toggle (change)="switchPrivate()">
+                    {{!isPublic ? 'Private' : 'Public'}}
+                </mat-slide-toggle>
+            </div>
             <div class="form-item-wrapper">
-                <div class="control-wrapper">
+                <div [ngClass]="{'control-wrapper' : true,
+                                 'valid' : form.get('title').valid,
+                                 'invalid' : form.get('title').invalid && form.get('title').touched}">
                     <input class="form-control"
                            type="text"
                            id="title"
@@ -22,44 +22,43 @@
                     <label for="title">Title *</label>
                 </div>
             </div>
-            <div class="add-btn" (click)="addParticipant()">
+            <button class="add-btn" (click)="addParticipant()">
                 <mat-icon>add</mat-icon>
                 <span>New Participant</span>
-            </div>
-            <div class="participants-wrapper" formArrayName="participants">
-                <div *ngFor="let control of participants.controls; let i = index"
-                     class="form-item-wrapper"
-                     [formGroupName]="i">
-                    <div [ngClass]="{'control-wrapper' : true,
+            </button>
+            <div class="scrollbar">
+                <div class="participants-wrapper" formArrayName="participants">
+                    <div *ngFor="let control of participants.controls; let i = index"
+                         class="form-item-wrapper"
+                         [formGroupName]="i">
+                        <div [ngClass]="{'control-wrapper' : true,
                                      'valid' : control.get('id').valid,
                                      'invalid' : control.get('id').invalid && control.touched}">
-                        <input class="form-control"
-                               type="text"
-                               id="{{'participant' + i}}"
-                               formControlName="name"
-                               placeholder="name"
-                               autocomplete="off"
-                               [dropPanel]="tip"
-                               [trigger]="tipTriggers[i] | async"
-                               [backdropClass]="'backdrop-transparent'"
-                               [staticBackdrop]=false
-                               (triggerEvent)="tipTriggersHandler(i)"
-                               (focus)="onFocusInput(i, control)">
-                        <label for="p{{'participant' + i}}">Participant - {{i + 1}} *</label>
+                            <input class="form-control"
+                                   type="text"
+                                   id="{{'participant' + i}}"
+                                   formControlName="name"
+                                   placeholder="name"
+                                   autocomplete="off"
+                                   [dropPanel]="tip"
+                                   [trigger]="tipTriggers[i] | async"
+                                   [backdropClass]="'backdrop-transparent'"
+                                   [staticBackdrop]=false
+                                   (triggerEvent)="tipTriggersHandler(i)"
+                                   (focus)="onFocusInput(i, control)">
+                            <label for="p{{'participant' + i}}">Participant - {{i + 1}} *</label>
+                        </div>
+                        <mat-icon class="delete-item" (click)="deleteParticipant(i)">delete</mat-icon>
                     </div>
-                    <mat-icon class="delete-item" (click)="deleteParticipant(i)">delete</mat-icon>
                 </div>
             </div>
         </form>
-        <!--        <div mat-dialog-actions>-->
-        <!--            <button mat-button (click)="onCreate()" class="create-btn" [disabled]="!form.valid-->
-        <!--                || form.untouched-->
-        <!--                || !validateInputs()-->
-        <!--                || participants.length < 1-->
-        <!--            ">Create room-->
-        <!--            </button>-->
-        <!--        </div>-->
     </div>
+    <button class="add-btn create-room"
+            [disabled]="form.invalid"
+            (click)="onCreate()">
+        <span>Create room</span>
+    </button>
 </div>
 
 
