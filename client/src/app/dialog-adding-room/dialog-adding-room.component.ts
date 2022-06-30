@@ -1,12 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ApiService} from '../shared/services/api.service';
 import {IUser} from '../shared/models/IUser';
 import {UserService} from '../shared/services/user.service';
 import {SubSink} from 'subsink';
-import {filter, Subject, switchMap, tap} from 'rxjs';
+import {debounce, filter, of, Subject, switchMap, tap, timer} from 'rxjs';
 import {PanelService} from '../shared/services/panel.service';
 import {IAddRoomForm, IParticipantForm} from '../shared/interfaces/forms.interface';
+import {THEMES} from '../shared/enums/theme.enum';
+import {ICreateRoomData} from '../shared/interfaces/create-room-data.interface';
 
 @Component({
     selector: 'app-dialog-adding-room',
@@ -14,6 +16,7 @@ import {IAddRoomForm, IParticipantForm} from '../shared/interfaces/forms.interfa
     styleUrls: ['./dialog-adding-room.component.scss']
 })
 export class DialogAddingRoomComponent implements OnInit, OnDestroy {
+    @Input() public theme: string = THEMES.DARK;
     private subs: SubSink = new SubSink();
     private formChanges$: Subject<FormGroup<IParticipantForm>> = new Subject();
     private controlIndex: number = 0;
@@ -30,18 +33,23 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.form = this.fb.group({
-            title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
-            participants: this.fb.array([this.getNewParticipantForm()])
-        });
-        this.panelService.userSearchingTips.push(new Subject<boolean>());
-        this.participants = this.form.get('participants') as FormArray<FormGroup<IParticipantForm>>;
+        this.initForm();
         this.searchedUsersListener();
         this.formChangesListener();
     }
 
     public ngOnDestroy(): void {
         this.subs.unsubscribe();
+    }
+
+    public initForm(): void {
+        this.panelService.userSearchingTips = [];
+        this.form = this.fb.group({
+            title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+            participants: this.fb.array([this.getNewParticipantForm()])
+        });
+        this.participants = this.form.get('participants') as FormArray<FormGroup<IParticipantForm>>;
+        this.panelService.userSearchingTips.push(new Subject<boolean>());
     }
 
     public selectUser(user: IUser): void {
@@ -76,6 +84,20 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
         this.panelService.isAddingRoom$.next(false);
     }
 
+    public onCreate(): void {
+        const usersIds = this.participants.controls.map((control) => {
+            return control.get('id').value;
+        });
+        const createRoomData = {
+            roomTitle: this.form.get('title').value,
+            participants: usersIds,
+            isPublic: this.isPublic
+        } as ICreateRoomData;
+        this.apiService.createRoom(createRoomData);
+        this.initForm();
+        this.onClose();
+    }
+
     private showTips(flag: boolean): void {
         this.panelService.userSearchingTips[this.controlIndex].next(flag);
     }
@@ -89,14 +111,14 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
 
     private attachParticipant(): void {
         const currentControl = this.participants.controls[this.controlIndex];
-        for (let i = 0; i < this.searchedUsers.length; ++i) {
-            const isNameMatching = this.searchedUsers[i].name.toLowerCase() === currentControl.get('name').value.toLowerCase();
-            const isIdMatching = this.searchedUsers[i]._id === currentControl.get('id').value;
-            if (isNameMatching && !isIdMatching) {
-                this.participants.controls[this.controlIndex].get('id').setValue(this.searchedUsers[i]._id);
-                this.isAttachedUser = true;
-                break;
-            }
+        const matchingUsers = this.searchedUsers.filter((user) => {
+            const isNameMatching = user.name.toLowerCase() === currentControl.get('name').value.toLowerCase();
+            const isIdMatching = user._id === currentControl.get('id').value;
+            return isNameMatching && !isIdMatching;
+        });
+        if (matchingUsers.length === 1) {
+            this.participants.controls[this.controlIndex].get('id').setValue(matchingUsers[0]._id);
+            this.isAttachedUser = true;
         }
     }
 
@@ -113,14 +135,21 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
             this.formChanges$.pipe(
                 filter((control) => !!control),
                 switchMap((control) => {
-                    return control.valueChanges;
+                    return control.valueChanges.pipe(
+                        debounce(() => timer(500))
+                    );
                 }),
-                tap((changes) => {
+                switchMap((changes) => {
                     const name = changes['name'] as string;
                     if (name.length > 2) {
-                        this.apiService.setUsersSearching(name.trim());
+                        return this.apiService.searchUsersByNameSubStr(changes['name'] as string);
                     }
-                })).subscribe()
+                    return of([] as IUser[]);
+                }),
+                tap((users) => {
+                    this.userService.searchedUsers$.next(users);
+                })
+            ).subscribe()
         );
     }
 
@@ -142,22 +171,4 @@ export class DialogAddingRoomComponent implements OnInit, OnDestroy {
     public get tipTriggers(): Subject<boolean>[] {
         return this.panelService.userSearchingTips;
     }
-
-    public onCreate(): void {
-        // this.userIds = this.userIds.filter((userId) => userId !== this.me);
-        // this.userIds = Array.from(new Set(this.userIds));
-        // // this.dialogRef.close({
-        // //     roomTitle: this.addRoomForm.get('title').value,
-        // //     participants: this.userIds,
-        // //     isPublic: this.isPublic
-        // // });
-    }
-
-
-    public validateInputs(): boolean {
-        return true;
-        // this.userIds = this.userIds.filter((userId) => userId !== this.me);
-        // return this.userIds.every((item) => !!item) && this.userIds.length > 0;
-    }
-
 }

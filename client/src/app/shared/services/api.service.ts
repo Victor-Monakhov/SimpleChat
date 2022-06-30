@@ -5,20 +5,19 @@ import {config} from '../config';
 import {Message} from '../models/Message';
 import {SocketService} from './socket.service';
 import {Option} from '../models/Option';
-import {LocalStorageService} from './local-storage.service';
 import {IUser} from '../models/IUser';
 import {AuthService} from './auth.service';
 import {IEntryData} from '../models/IEntryData.interface';
-import {API_INPUT_EVENT, API_OUTPUT_EVENT} from '../enums/api-event.enum';
+import {HTTP_API_EVENT, SOCKET_API_INPUT_EVENT, SOCKET_API_OUTPUT_EVENT} from '../enums/api-event.enum';
 import {IRoom} from '../models/IRoom';
-import {THEMES} from '../enums/theme.enum';
+import {ICreateRoomData} from '../interfaces/create-room-data.interface';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ApiService {
 
-     public theme: Subject<string> = new Subject<string>(); // temp
+    public theme: Subject<string> = new Subject<string>(); // temp
 
     public currentRoomUsers: BehaviorSubject<object[]> = new BehaviorSubject<object[]>([]);
     public device: object = {isDesktop: 1, isMobile: 0, isTablet: 0};
@@ -50,31 +49,45 @@ export class ApiService {
         });
     }
 
+    public searchUsersByNameSubStr(name: string): Observable<IUser[]> {
+        return this.http.post<string[]>(
+            `${config.API_URL}/${HTTP_API_EVENT.SEARCH_USERS}`, {name: name}
+        ) as Observable<IUser[]>;
+    }
+
     public getTheme(): Observable<string> {
-        return this.socketService.listen(API_INPUT_EVENT.CHANGE_THEME);
+        return this.socketService.listen(SOCKET_API_INPUT_EVENT.CHANGE_THEME);
     }
 
     public setTheme(theme: string): void {
-        this.socketService.emit(API_OUTPUT_EVENT.CHANGE_THEME, {theme: theme});
+        this.socketService.emit(SOCKET_API_OUTPUT_EVENT.CHANGE_THEME, {theme: theme});
     }
 
     public getEntryData(): Observable<IEntryData> {
-        return this.socketService.listen(API_INPUT_EVENT.ENTRY);
+        return this.socketService.listen(SOCKET_API_INPUT_EVENT.ENTRY);
     }
 
     public getRoomsSearchingResult(): Observable<IRoom[]> {
-        return this.socketService.listen(API_INPUT_EVENT.SEARCH_ROOMS);
+        return this.socketService.listen(SOCKET_API_INPUT_EVENT.SEARCH_ROOMS);
     }
 
     public setRoomsSearching(text: string): void {
-        this.socketService.emit(API_OUTPUT_EVENT.SEARCH_ROOMS, text);
+        this.socketService.emit(SOCKET_API_OUTPUT_EVENT.SEARCH_ROOMS, text);
     }
 
-    public getUsersSearchingResult(): Observable<IUser[]> {
-        return this.socketService.listen(API_INPUT_EVENT.SEARCH_USERS);
+    public getNewRoom(): Observable<IRoom> {
+        return this.socketService.listen(SOCKET_API_INPUT_EVENT.NEW_ROOM);
     }
 
-    public setUsersSearching(name: string): void {
-        this.socketService.emit(API_OUTPUT_EVENT.SEARCH_USERS, name);
+    // public getUsersSearchingResult(): Observable<IUser[]> {
+    //     return this.socketService.listen(SOCKET_API_INPUT_EVENT.SEARCH_USERS);
+    // }
+    //
+    // public setUsersSearching(name: string): void {
+    //     this.socketService.emit(SOCKET_API_OUTPUT_EVENT.SEARCH_USERS, name);
+    // }
+
+    public createRoom(roomInfo: ICreateRoomData): void {
+        this.socketService.emit(SOCKET_API_OUTPUT_EVENT.CREATE_ROOM, roomInfo);
     }
 }

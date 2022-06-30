@@ -4,7 +4,7 @@
             <mat-icon (click)="onClose()">clear</mat-icon>
         </div>
         <h1>Create new room</h1>
-        <form class="form" [formGroup]="form" (ngSubmit)="onCreate()">
+        <form class="form" [formGroup]="form">
             <div class="room-type">
                 <mat-slide-toggle (change)="switchPrivate()">
                     {{!isPublic ? 'Private' : 'Public'}}
@@ -64,7 +64,7 @@
 
 <app-drop-panel #tip>
     <app-users-search-tip
-        [ngClass]="['drop-tip']"
+        [ngClass]="['drop-tip', theme]"
         [tipContent]="searchedUsers"
         (userEvent)="selectUser($event)">
     </app-users-search-tip>

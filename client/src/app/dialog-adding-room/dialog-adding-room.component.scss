@@ -21,7 +21,7 @@
 
         .close {
             display: flex;
-            justify-content: end;
+            justify-content: flex-end;
             margin: 10px 20px;
             width: calc(100% - 40px);
             height: 25px;
@@ -103,19 +103,6 @@
     .create-room {
         box-shadow: 0 -2px 15px 0 $blackA04;
     }
-    //input {
-    //    box-shadow: 0 0 10px $blackA05;
-    //    background: $whiteA05;
-    //
-    //    &:hover, &:focus {
-    //        background: $whiteA07;
-    //        box-shadow: 0 0 10px $black;
-    //    }
-    //}
-
-    //.unread {
-    //    color: $blue;
-    //}
 }
 
 :host-context(.dark) {
@@ -132,22 +119,6 @@
     .create-room {
         box-shadow: 0 -2px 15px 0 $whiteA03;
     }
-    //input {
-    //    background: $whiteA05;
-    //
-    //    &:hover, &:focus {
-    //        background: $whiteA07;
-    //        box-shadow: 0 0 10px $white;
-    //    }
-    //}
-
-    //.room {
-    //    color: $whiteA07;
-    //
-    //    .unread {
-    //        color: $red;
-    //    }
-    //}
 }
 
 .drop-tip {

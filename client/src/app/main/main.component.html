@@ -1,8 +1,7 @@
 <app-header></app-header>
 <div class="wrapper">
     <app-chat-settings-panel class="chat-settings"
-                             (onCreateRoom)="createRoom()"
-                             (closeList)="openSideNav()">
+                             (themeEvent)="onTheme($event)">
     </app-chat-settings-panel>
     <app-chat></app-chat>
     <div class="flip-card">
@@ -29,7 +28,8 @@
                 [trigger]="addingRoomTrigger$ | async"
                 (triggerEvent)="addingRoomTriggerHandler($event)">
     <app-dialog-adding-room
-        [ngClass]="['drop-adding-room', theme, (addingRoomTrigger$ | async) ? 'visible' :'hidden']">
+        [ngClass]="['drop-adding-room', theme, (addingRoomTrigger$ | async) ? 'visible' :'hidden']"
+        [theme]="theme">
     </app-dialog-adding-room>
 </app-drop-panel>
 

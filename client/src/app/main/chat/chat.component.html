@@ -4,12 +4,12 @@
 <!--            <mat-drawer class="sidenav-content"-->
 <!--                        [(opened)]="opened"-->
 <!--                        [mode]="chatService.device['isDesktop'] ? 'side' : 'over'">-->
-<!--                <app-room-list [rooms]="rooms | updateRooms"-->
+<!--                <app-chat-settings-panel [rooms]="rooms | updateRooms"-->
 <!--                               [unread]="unreadInRooms"-->
 <!--                               (onSelectedRoom)="toggleRoom($event)"-->
 <!--                               (onCreateRoom)="createRoom()"-->
 <!--                               (closeList)="openSideNav()">-->
-<!--                </app-room-list>-->
+<!--                </app-chat-settings-panel>-->
 <!--            </mat-drawer>-->
             <app-room [currentRoom]="currentRoom"
                       [newMessage]="newMessage"

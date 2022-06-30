@@ -43,68 +43,53 @@ export class ChatComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-            // this.me = LocalStorageService.getUser()['id'];
+        // this.me = LocalStorageService.getUser()['id'];
 
-            // -----------------------------------------------------------------------------------------------------------
-            this.subs.add(
-                this.chatService.getEntryData().subscribe((data) => {
-                    data.rooms.forEach((room) => {
-                        this.unreadInRooms[room._id] = 0;
-                        room.lastAction = new Date(room.lastAction);
-                        this.rooms.push(room);
-                    });
-                    // this.listOfRooms = this.rooms;
-                    this.currentRoom = this.rooms.find(
-                        (room) => room._id === LocalStorageService.getlastRoomId()) || this.rooms[0];
-                })
-            );
-            // -----------------------------------------------------------------------------------------------------------
+        // -----------------------------------------------------------------------------------------------------------
+        // -----------------------------------------------------------------------------------------------------------
 
-            // this.socketService.listen('newMessage').subscribe(data => {
-            //     this.newMessage = data;
-            //     const tempRoom = this.rooms.find((room) => room._id === data.room);
-            //     this.rooms = this.rooms.map((room) => {
-            //         if (room._id === tempRoom._id) {
-            //             room.lastAction = new Date();
-            //         }
-            //         return room;
-            //     });
-            //     if (data.room !== this.selectedRoom._id) {
-            //         this.unreadInRooms[data.room] += 1;
-            //         this.recountUnread();
-            //     }
-            //     this.listOfRooms = this.rooms;
-            // });
-            // this.socketService.listen('invitation').subscribe(data => this.openInvitation(data));
-            // this.socketService.listen('newRoom').subscribe(data => {
-            //     data.lastAction = new Date(data.lastAction);
-            //     this.rooms.unshift(data);
-            //     this.unreadInRooms[data._id] = 0;
-            //     this.rooms = this.rooms.map((room, index) => ({...room, index}));
-            //     this.listOfRooms = this.rooms;
-            // });
-            // this.socketService.listen('userLeft').subscribe(data => {
-            //     if (data.userId === this.me) this.leaveRoom(data.roomId);
-            // });
-            // this.socketService.listen('roomDeleted').subscribe(data => {
-            //     this.rooms = this.rooms.filter(room => room._id !== data.id);
-            //     this.listOfRooms = this.rooms;
-            //     delete this.unreadInRooms[data.id];
-            //     this.selectedRoom = this.rooms[0];
-            // });
-            // this.socketService.listen('roomRename').subscribe(data => {
-            //     this.rooms = this.rooms.map(room => {
-            //         if (room._id === data.id) room.title = data.title;
-            //         return room;
-            //     });
-            //     this.listOfRooms = this.rooms;
-            // });
-            // this.socketService.listen('privacyChanged').subscribe(data => {
-            //     this.rooms = this.rooms.map(room => {
-            //         if (room._id === data.id) room.isPublic = data.isPublic;
-            //         return room;
-            //     });
-            // })
+        // this.socketService.listen('newMessage').subscribe(data => {
+        //     this.newMessage = data;
+        //     const tempRoom = this.rooms.find((room) => room._id === data.room);
+        //     this.rooms = this.rooms.map((room) => {
+        //         if (room._id === tempRoom._id) {
+        //             room.lastAction = new Date();
+        //         }
+        //         return room;
+        //     });
+        //     if (data.room !== this.selectedRoom._id) {
+        //         this.unreadInRooms[data.room] += 1;
+        //         this.recountUnread();
+        //     }
+        //     this.listOfRooms = this.rooms;
+        // });
+        // this.socketService.listen('invitation').subscribe(data => this.openInvitation(data));
+
+        // -----------------------------------------------------------------------------
+        // ------------------------------------------------------------------------------
+
+        // this.socketService.listen('userLeft').subscribe(data => {
+        //     if (data.userId === this.me) this.leaveRoom(data.roomId);
+        // });
+        // this.socketService.listen('roomDeleted').subscribe(data => {
+        //     this.rooms = this.rooms.filter(room => room._id !== data.id);
+        //     this.listOfRooms = this.rooms;
+        //     delete this.unreadInRooms[data.id];
+        //     this.selectedRoom = this.rooms[0];
+        // });
+        // this.socketService.listen('roomRename').subscribe(data => {
+        //     this.rooms = this.rooms.map(room => {
+        //         if (room._id === data.id) room.title = data.title;
+        //         return room;
+        //     });
+        //     this.listOfRooms = this.rooms;
+        // });
+        // this.socketService.listen('privacyChanged').subscribe(data => {
+        //     this.rooms = this.rooms.map(room => {
+        //         if (room._id === data.id) room.isPublic = data.isPublic;
+        //         return room;
+        //     });
+        // })
     }
 
     public recountUnread(): void {

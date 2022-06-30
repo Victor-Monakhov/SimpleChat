@@ -16,6 +16,8 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 import {WIN_SIZES} from '../../app.config';
 import {SubSink} from 'subsink';
 import {PanelService} from '../../shared/services/panel.service';
+import {UserService} from '../../shared/services/user.service';
+import {IUser} from '../../shared/models/IUser';
 
 
 @Component({
@@ -30,7 +32,7 @@ export class ContactMenuPanelComponent implements OnInit, OnDestroy {
     private blacklist: string[] = [];
     private lastSelectedContactId: string = '';
     private content: string = '';
-    public list: object[] = [];
+    // public contacts: object[] = [];
     public roomId: string = '';
     public config: PerfectScrollbarConfigInterface = {wheelSpeed: 0.2, scrollingThreshold: 0};
     public menuItems: MenuItemModel[] = [
@@ -51,7 +53,7 @@ export class ContactMenuPanelComponent implements OnInit, OnDestroy {
     public constructor(private socketService: SocketService,
                 private apiService: ApiService,
                 private panelService: PanelService,
-                private authService: AuthService,
+                private userService: UserService,
                 private breakpointObserver: BreakpointObserver) {
         this.subs.add(
             breakpointObserver
@@ -63,12 +65,7 @@ export class ContactMenuPanelComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        if (this.authService.isAuthenticated()) {
-            this.blacklist = LocalStorageService.getBlacklist();
-            this.apiService.currentRoomUsers.subscribe(users => {
-                this.list = users;
-            });
-        }
+        this.blacklist = LocalStorageService.getBlacklist();
     }
 
     public ngOnDestroy(): void {
@@ -79,7 +76,7 @@ export class ContactMenuPanelComponent implements OnInit, OnDestroy {
         this.panelService.isContactMenu$.next(false);
     }
 
-    public addDisabled(args: MenuEventArgs) {
+    public addDisabled(args: MenuEventArgs): void {
         if (args.item.text === 'Link') {
             args.element.classList.add('e-disabled');
         }
@@ -143,5 +140,9 @@ export class ContactMenuPanelComponent implements OnInit, OnDestroy {
             }
             this.contextmenu.items = this.menuItems;
         }
+    }
+
+    public get contacts(): IUser[] {
+        return this.userService.currentRoom.users;
     }
 }

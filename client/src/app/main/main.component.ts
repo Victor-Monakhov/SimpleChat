@@ -25,8 +25,9 @@ export class MainComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.themeListener();
-        this.usersSearchingListener();
+        this.listenEntryData();
+        this.newRoomListener();
+        this.listenRoomsSearchingResult();
         const aSub = this.apiService.getBlacklist().subscribe((blacklist) => {
             LocalStorageService.setBlacklist(blacklist);
             aSub.unsubscribe();
@@ -41,16 +42,39 @@ export class MainComponent implements OnInit {
         this.panelService.isAddingRoom$.next(trigger);
     }
 
-    private themeListener(): void {
+    public onTheme(theme: string): void {
+        this.theme = theme;
+    }
+
+    private listenEntryData(): void {
         this.subs.add(
-            this.apiService.getTheme().subscribe((theme) => this.theme = theme)
+            this.apiService.getEntryData().subscribe((data) => {
+                data.rooms.forEach((room) => {
+                    this.userService.unreadInRooms.set(room._id, 0);
+                    room.lastAction = new Date(room.lastAction);
+                    this.userService.rooms.push(room);
+                });
+                this.userService.currentRoom = this.userService.rooms.find((room) => {
+                    return room._id === LocalStorageService.getlastRoomId()
+                }) || this.userService.rooms[0];
+            })
         );
     }
 
-    private usersSearchingListener(): void {
+    private newRoomListener(): void {
         this.subs.add(
-            this.apiService.getUsersSearchingResult().subscribe((users) => {
-                this.userService.searchedUsers$.next(users);
+            this.apiService.getNewRoom().subscribe(data => {
+                data.lastAction = new Date(data.lastAction);
+                this.userService.rooms.unshift(data);
+                this.userService.unreadInRooms.set(data._id, 0);
+            })
+        );
+    }
+
+    private listenRoomsSearchingResult(): void {
+        this.subs.add(
+            this.apiService.getRoomsSearchingResult().subscribe((rooms) => {
+                this.userService.searchedRooms = rooms;
             })
         );
     }

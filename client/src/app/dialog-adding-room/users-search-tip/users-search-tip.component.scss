@@ -1,13 +1,15 @@
 @import "colors.scss";
+@import "scrollbar.scss";
+@import "themes/dark-theme.scss";
+@import "themes/light-theme.scss";
 
 .tip {
-    //width: 100%;
     background-color: $white;
-    //position: absolute;
-    //top: 100%;
-    //z-index: 2;
+    z-index: 2;
+    overflow-y: hidden;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+    border: 1px solid;
     padding: 10px;
 
     .scrollbar {
@@ -15,6 +17,7 @@
         padding: 0;
         width: 100%;
         max-height: 100px;
+        overflow-y: auto;
 
         .tip-item-wrapper {
             display: flex;
@@ -37,5 +40,21 @@
                 }
             }
         }
+    }
+}
+
+:host-context(.light) {
+    .tip {
+        border-bottom-color: $blue;
+        border-left-color: $blue;
+        border-right-color: $blue;
+    }
+}
+
+:host-context(.dark) {
+    .tip {
+        border-bottom-color: $light-orange;
+        border-left-color: $light-orange;
+        border-right-color: $light-orange;
     }
 }

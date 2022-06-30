@@ -19,7 +19,7 @@
         }
     }
 
-    .settings-wrapper, .contacts-wrapper, .add-room-wrapper {
+    .settings-wrapper, .contacts-wrapper, .add-room-wrapper, .tip {
         background-color: $background-dark;
         border-color: $whiteA05;
         color: $white;
@@ -33,7 +33,7 @@
         background-color: $orange;
     }
 
-    .contacts-wrapper:hover, .settings-wrapper:hover, .add-room-wrapper:hover{
+    .contacts-wrapper:hover, .settings-wrapper:hover, .add-room-wrapper:hover, .tip:hover {
         ::-webkit-scrollbar-track{
             background: $blackA05;
         }
