@@ -1,7 +1,9 @@
 <div class="settings-wrapper">
     <div class="panel-hat">
         <p>Main menu</p>
-        <mat-icon class="close-panel" (click)="closeList.emit()">
+        <mat-icon *ngIf="(isChatSettingsVisible$ | async) === true"
+            class="close-panel"
+                  (click)="closeSettings()">
             vertical_split
         </mat-icon>
     </div>

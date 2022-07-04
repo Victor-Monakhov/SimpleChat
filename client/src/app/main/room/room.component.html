@@ -1,6 +1,6 @@
-<div class="room-wrapper" [ngClass]="{'dark': theme === 'dark', 'light': theme === 'light'}">
+<div class="room-wrapper">
     <div class="chat-menu">
-        <ng-container *ngIf="(currentRoom._id !== 'common'); else ifCommon">
+<!--        <ng-container *ngIf="(currentRoom._id !== 'common'); else ifCommon">-->
 <!--            <ng-container *ngIf="!currentRoom.isFavorites; else ifCommon">-->
             <ng-container >
                 <div class="room-info">
@@ -22,7 +22,7 @@
                         </button>
                     </div>
                 </div>
-                <ng-container *ngIf="apiService.device['isDesktop']; else mobileMenu">
+                <ng-container *ngIf="false; else mobileMenu">
                     <mat-list class="menu-items">
                         <mat-list-item matRipple (click)="inviteUsers()">
                             <mat-icon>person_add</mat-icon>
@@ -64,7 +64,7 @@
                     </mat-menu>
                 </ng-template>
             </ng-container>
-        </ng-container>
+<!--        </ng-container>-->
 
         <ng-template #ifCommon>
             <div class="room-info">

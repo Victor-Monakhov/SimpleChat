@@ -1,15 +1,12 @@
-import {Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {IRoom} from '../../shared/models/IRoom';
-import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
 import {SocketService} from '../../shared/services/socket.service';
 import {ApiService} from '../../shared/services/api.service';
 import {THEMES} from '../../shared/enums/theme.enum';
 import {SubSink} from 'subsink';
-import {SOCKET_API_INPUT_EVENT, SOCKET_API_OUTPUT_EVENT} from '../../shared/enums/api-event.enum';
-import {LocalStorageService} from '../../shared/services/local-storage.service';
 import {UserService} from '../../shared/services/user.service';
-import {DialogAddingRoomComponent} from '../../dialog-adding-room/dialog-adding-room.component';
 import {PanelService} from '../../shared/services/panel.service';
+import {Subject} from 'rxjs';
 
 @Component({
     selector: 'app-chat-settings-panel',
@@ -17,13 +14,9 @@ import {PanelService} from '../../shared/services/panel.service';
     styleUrls: ['./chat-settings-panel.component.scss']
 })
 export class ChatSettingsPanelComponent implements OnInit, OnDestroy {
-    // @Output() onCreateRoom: EventEmitter<any> = new EventEmitter<any>();
-    // @Output() closeList: EventEmitter<any> = new EventEmitter<any>();
     @Output() public themeEvent: EventEmitter<string> = new EventEmitter<string>();
     private subs: SubSink = new SubSink();
-    // public unread: object = {};
     public isCheckedTheme: boolean = true;
-    // public searchedRooms: IRoom[] = [];
     public textForSearching: string = '';
 
 
@@ -37,8 +30,6 @@ export class ChatSettingsPanelComponent implements OnInit, OnDestroy {
 
     public ngOnInit(): void {
         this.listenTheme();
-        // this.listenRoomsSearchingResult();
-        // this.listenEntryData();
     }
 
     public ngOnDestroy(): void {
@@ -88,6 +79,10 @@ export class ChatSettingsPanelComponent implements OnInit, OnDestroy {
         this.apiService.setRoomsSearching(this.textForSearching);
     }
 
+    public closeSettings(): void {
+        this.isChatSettingsVisible$.next(false);
+    }
+
     private listenTheme(): void {
         this.subs.add(
             this.apiService.getTheme().subscribe((theme) => {
@@ -115,5 +110,9 @@ export class ChatSettingsPanelComponent implements OnInit, OnDestroy {
         } else {
             return this.userService.rooms;
         }
+    }
+
+    public get isChatSettingsVisible$(): Subject<boolean> {
+        return this.panelService.isChatSettingsVisible$;
     }
 }

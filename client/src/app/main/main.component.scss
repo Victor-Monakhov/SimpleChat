@@ -3,21 +3,45 @@
 @import "colors.scss";
 @import "animations.scss";
 
-.wrapper {
+.chat-wrapper {
+    @include media-property(H, width, 100%, 100%, calc(100% + #{$chat-settings-panel-width}));
+    @include media-property(H, left, 0, 0, -$chat-settings-panel-width);
     display: flex;
     height: calc(100% - #{$header-height});
+    position: relative;
+    //width: 100%;
+    //width: calc(100% + #{$chat-settings-panel-width});
+    overflow-x: hidden;
+    //left: -$chat-settings-panel-width;
 
-    app-chat {
+    &.visible-settings {
+        @keyframes settings-visible {
+            0%{left: -#{$chat-settings-panel-width}; width: calc(100% + #{$chat-settings-panel-width});}
+            100%{left: 0; width: 100%;}
+        }
+        animation: settings-visible ease-out 0.5s 1 both;
+    }
+
+    &.hidden-settings {
+        @keyframes settings-hidden {
+            0%{left: 0; width: 100%;}
+            100%{left: -#{$chat-settings-panel-width}; width: calc(100% + #{$chat-settings-panel-width});}
+        }
+        animation: settings-hidden ease-out 0.5s 1 both;
+    }
+
+    .chat-space-wrapper {
         flex-basis: 100%;
         flex-shrink: 1;
     }
-
-
 
     .chat-settings {
         @include media-property(H, display, none, none, block);
         flex-shrink: 0;
         width: $chat-settings-panel-width;
+        //left: -$chat-settings-panel-width;
+
+
     }
 
     .flip-card {

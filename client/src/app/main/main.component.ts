@@ -2,10 +2,9 @@ import {Component, HostBinding, OnInit, ViewChild} from '@angular/core';
 import {ApiService} from '../shared/services/api.service';
 import {ContextMenuComponent} from '@syncfusion/ej2-angular-navigations';
 import {LocalStorageService} from '../shared/services/local-storage.service';
-import {Subject} from 'rxjs';
+import {Observable, Subject, tap} from 'rxjs';
 import {THEMES} from '../shared/enums/theme.enum';
 import {SubSink} from 'subsink';
-import {IRoom} from '../shared/models/IRoom';
 import {PanelService} from '../shared/services/panel.service';
 import {UserService} from '../shared/services/user.service';
 
@@ -34,12 +33,20 @@ export class MainComponent implements OnInit {
         });
     }
 
-    public contactMenuTriggerHandler(trigger: boolean): void {
-        this.panelService.isContactMenu$.next(trigger);
-    }
+    // public contactMenuTriggerHandler(trigger: boolean): void {
+    //     this.panelService.isContactMenu$.next(trigger);
+    // }
+    //
+    // public addingRoomTriggerHandler(trigger: boolean): void {
+    //     this.panelService.isAddingRoom$.next(trigger);
+    // }
+    //
+    // public chatSettingsTriggerHandler(trigger: boolean): void {
+    //     this.panelService.isChatSettings$.next(trigger);
+    // }
 
-    public addingRoomTriggerHandler(trigger: boolean): void {
-        this.panelService.isAddingRoom$.next(trigger);
+    public triggerHandler(result: boolean, trigger: Subject<boolean>): void {
+        trigger.next(result);
     }
 
     public onTheme(theme: string): void {
@@ -55,7 +62,7 @@ export class MainComponent implements OnInit {
                     this.userService.rooms.push(room);
                 });
                 this.userService.currentRoom = this.userService.rooms.find((room) => {
-                    return room._id === LocalStorageService.getlastRoomId()
+                    return room._id === LocalStorageService.getlastRoomId();
                 }) || this.userService.rooms[0];
             })
         );
@@ -89,5 +96,21 @@ export class MainComponent implements OnInit {
 
     public get addingRoomTrigger$(): Subject<boolean> {
         return this.panelService.isAddingRoom$;
+    }
+
+    public get chatSettingsTrigger$(): Subject<boolean> {
+        return this.panelService.isChatSettings$;
+    }
+
+    public get isChatSettingsVisible$(): Subject<boolean> {
+        return this.panelService.isChatSettingsVisible$;
+    }
+
+    public get isDesktopMode(): boolean {
+        // this.panelService.isDesktopMode$.subscribe(((result) => {
+        //     console.log(result);
+        //     })
+        // );
+        return this.panelService.isDesktopMode;
     }
 }

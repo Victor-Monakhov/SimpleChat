@@ -1,9 +1,16 @@
 <app-header></app-header>
-<div class="wrapper">
+<div [ngClass]="{'chat-wrapper': true,
+
+
+                'visible-settings': (isChatSettingsVisible$ | async) && isDesktopMode,
+                'hidden-settings': (isChatSettingsVisible$ | async) === false && isDesktopMode}">
     <app-chat-settings-panel class="chat-settings"
                              (themeEvent)="onTheme($event)">
     </app-chat-settings-panel>
-    <app-chat></app-chat>
+    <div class="chat-space-wrapper">
+        <app-chat-work-space></app-chat-work-space>
+    </div>
+<!--    <app-chat></app-chat>-->
     <div class="flip-card">
         <div class="flip-card-inner"
              [ngClass]="{'rotate' : isFlipped$ | async}">
@@ -17,16 +24,26 @@
                 [dropPanel]="contactMenu"
                 [trigger]="contactMenuTrigger$ | async"
                 [animDaley]="500"
-                (triggerEvent)="contactMenuTriggerHandler($event)">
+                (triggerEvent)="triggerHandler($event, contactMenuTrigger$)">
     <app-contact-menu-panel
         [ngClass]="['drop-contact-menu', theme, (contactMenuTrigger$ | async) ? 'visible' :'hidden']">
     </app-contact-menu-panel>
 </app-drop-panel>
 
+<app-drop-panel #chatSettings
+                [dropPanel]="chatSettings"
+                [trigger]="chatSettingsTrigger$ | async"
+                (triggerEvent)="triggerHandler($event, chatSettingsTrigger$)">
+    <app-chat-settings-panel
+        [ngClass]="['drop-chat-settings', theme, (chatSettingsTrigger$ | async) ? 'visible' :'hidden']"
+        (themeEvent)="onTheme($event)">
+    </app-chat-settings-panel>
+</app-drop-panel>
+
 <app-drop-panel #addRoom
                 [dropPanel]="addRoom"
                 [trigger]="addingRoomTrigger$ | async"
-                (triggerEvent)="addingRoomTriggerHandler($event)">
+                (triggerEvent)="triggerHandler($event, addingRoomTrigger$)">
     <app-dialog-adding-room
         [ngClass]="['drop-adding-room', theme, (addingRoomTrigger$ | async) ? 'visible' :'hidden']"
         [theme]="theme">

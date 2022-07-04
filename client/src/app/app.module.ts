@@ -57,6 +57,7 @@ import { DropPanelDirective } from './shared/directives/drop-panel.directive';
 import { DropPanelComponent } from './shared/components/drop-panel/drop-panel.component';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { UsersSearchTipComponent } from './dialog-adding-room/users-search-tip/users-search-tip.component';
+import { ChatWorkSpaceComponent } from './main/chat-work-space/chat-work-space.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -86,7 +87,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         ContextMenuDirective,
         DropPanelDirective,
         DropPanelComponent,
-        UsersSearchTipComponent
+        UsersSearchTipComponent,
+        ChatWorkSpaceComponent
     ],
     imports: [
         BrowserModule,

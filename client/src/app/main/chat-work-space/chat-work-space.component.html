@@ -1,0 +1,13 @@
+<div class="chat-work-space-wrapper">
+    <div class="panel-hat">
+
+
+        <mat-icon
+            *ngIf="((isChatSettingsVisible$ | async) !== true) ||
+                   (isDesktopMode  === false)"
+            class="close-panel"
+            (click)="openSettings()">
+            vertical_split
+        </mat-icon>
+    </div>
+</div>
